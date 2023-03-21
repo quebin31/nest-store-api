@@ -1,6 +1,6 @@
 summary: Operations for a specific product
 parameters:
-  - $ref: '../params.yaml#/components/parameters/id'
+  - $ref: '../common/params.yaml#/components/parameters/id'
 patch:
   summary: Update a product information
   tags:
