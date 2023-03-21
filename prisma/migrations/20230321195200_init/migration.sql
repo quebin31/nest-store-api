@@ -2,7 +2,7 @@
 CREATE TYPE "role" AS ENUM ('user', 'manager', 'admin');
 
 -- CreateEnum
-CREATE TYPE "product_state" AS ENUM ('active', 'disabled', 'deleted');
+CREATE TYPE "product_state" AS ENUM ('active', 'inactive', 'deleted');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -34,7 +34,7 @@ CREATE TABLE "products" (
     "description" TEXT NOT NULL,
     "price" DECIMAL(10,2) NOT NULL,
     "thumbnail_url" TEXT,
-    "state" "product_state" NOT NULL DEFAULT 'disabled',
+    "state" "product_state" NOT NULL DEFAULT 'inactive',
     "category_name" TEXT NOT NULL,
     "created_by_id" UUID NOT NULL,
 

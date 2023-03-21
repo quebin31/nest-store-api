@@ -46,7 +46,7 @@ model Category {
 
 enum ProductState {
     active
-    disabled
+    inactive
     deleted
 
     @@map("product_state")
@@ -61,7 +61,7 @@ model Product {
     description  String
     price        Decimal        @db.Decimal(10, 2)
     thumbnailUrl String?        @map("thumbnail_url")
-    state        ProductState   @default(disabled)
+    state        ProductState   @default(inactive)
     images       ProductImage[]
 
     categoryName String   @map("category_name")
