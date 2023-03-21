@@ -23,6 +23,7 @@ get:
   tags:
     - Products
   operationId: getProducts
+  security: [ ]
   parameters:
     - name: sort
       in: query

@@ -38,3 +38,6 @@ paths:
 
   /products:
     $ref: './products/products.yaml'
+
+  /products/{id}:
+    $ref: './products/products-by-id.yaml'

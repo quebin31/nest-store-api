@@ -19,6 +19,30 @@ ProductCategoriesResBody:
         allOf:
           - $ref: '#/Category'
 
+ProductBaseInput:
+  type: object
+  properties:
+    name:
+      type: string
+      minLength: 10
+      maxLength: 64
+    description:
+      type: string
+      minLength: 10
+      maxLength: 256
+    price:
+      description: Will be rounded to two decimals.
+      type: number
+      format: float
+    categoryName:
+      description: The category name, not to be confused with its display name.
+      type: string
+      pattern: '^[a-z][a-z_]+$'
+    active:
+      description: Whether the post will be active immediately
+      type: boolean
+      default: false
+
 # Multipart schema
 CreateProductReqBody:
   type: object
@@ -26,29 +50,23 @@ CreateProductReqBody:
     # First part
     product:
       type: object
-      properties:
-        name:
-          type: string
-          minLength: 10
-          maxLength: 64
-        description:
-          type: string
-          minLength: 10
-          maxLength: 256
-        price:
-          description: Will be rounded to two decimals.
-          type: number
-          format: float
-        categoryName:
-          description: The category name, not to be confused with its display name.
-          type: string
-          pattern: '^[a-z][a-z_]+$'
-        active:
-          description: Whether the post will be active immediately
-          type: boolean
-          default: false
+      allOf:
+        - $ref: '#/ProductBaseInput'
       required: [ name, description, price, categoryName ]
     # Second part
+    thumbnail:
+      type: string
+      format: binary
+  required: [ product, thumbnail ]
+
+# Multipart schema
+UpdateProductReqBody:
+  type: object
+  properties:
+    product:
+      type: object
+      allOf:
+        - $ref: '#/ProductBaseInput'
     thumbnail:
       type: string
       format: binary
@@ -93,6 +111,7 @@ ProductsPageResBody:
     length:
       description: Number of returned posts.
       type: integer
+      example: 25
     cursor:
       description: To get next page from where the returned results end.
       type: string

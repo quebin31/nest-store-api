@@ -1,0 +1,43 @@
+summary: Operations for a specific product
+parameters:
+  - $ref: '../params.yaml#/components/parameters/id'
+patch:
+  summary: Update a product information
+  tags:
+    - Products
+  operationId: updateProduct
+  requestBody:
+    description: New product information
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/UpdateProductReqBody'
+  responses:
+    200:
+      description: Successfully updated.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/ProductResBody'
+get:
+  summary: Get a product information
+  tags:
+    - Products
+  operationId: getProduct
+  security: [ ]
+  responses:
+    200:
+      description: Successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/ProductResBody'
+delete:
+  summary: Delete a product
+  tags:
+    - Products
+  operationId: deleteProduct
+  responses:
+    204:
+      description: Product successfully deleted.
