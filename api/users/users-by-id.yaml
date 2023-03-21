@@ -14,25 +14,3 @@ get:
         application/json:
           schema:
             $ref: './models.yaml#/UserResBody'
-patch:
-  summary: Update user information
-  description: |
-    Updating the email will change the verified state of the user to `false`, and a new verification
-    email will be sent.
-  tags:
-    - Users
-  operationId: updateUser
-  requestBody:
-    description: New user information
-    required: true
-    content:
-      application/json:
-        schema:
-          $ref: './models.yaml#/UpdateUserReqBody'
-  responses:
-    200:
-      description: Successfully updated.
-      content:
-        application/json:
-          schema:
-            $ref: './models.yaml#/UserResBody'
