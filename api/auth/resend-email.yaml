@@ -1,0 +1,8 @@
+post:
+  summary: Resend verification email
+  tags:
+    - Auth
+  operationId: resendEmail
+  responses:
+    204:
+      description: The email has been scheduled to be sent.

@@ -1,0 +1,20 @@
+post:
+  summary: Sign in
+  tags:
+    - Auth
+  operationId: signIn
+  security: [ ]
+  requestBody:
+    description: User credentials.
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/SignInReqBody'
+  responses:
+    200:
+      description: Successfully logged in.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/CommonAuthResBody'

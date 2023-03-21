@@ -1,0 +1,15 @@
+post:
+  summary: Verify email with code
+  tags:
+    - Auth
+  operationId: verifyEmail
+  requestBody:
+    description: Verification information
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/VerifyEmailReqBody'
+  responses:
+    204:
+      description: Successfully verified.

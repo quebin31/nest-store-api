@@ -1,0 +1,20 @@
+post:
+  summary: Sign up
+  tags:
+    - Auth
+  operationId: signUp
+  security: [ ]
+  requestBody:
+    description: New user information
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/SignUpReqBody'
+  responses:
+    201:
+      description: New user successfully created
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/CommonAuthResBody'

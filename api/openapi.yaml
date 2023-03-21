@@ -1,0 +1,33 @@
+openapi: 3.1.0
+info:
+  title: Store API
+  description: OpenAPI documentation
+  version: 0.1.0
+  contact:
+    name: Kevin Del Castillo
+    email: kevindelcastillo@ravn.co
+servers:
+  - url: 'http://localhost/api/v1'
+security:
+  - bearerAuth: [ ]
+components:
+  securitySchemes:
+    bearerAuth:
+      description: Authorization with a Json Web Token (obtained after signing in/up)
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /auth/sign-up:
+    $ref: './auth/sign-up.yaml'
+
+  /auth/sign-in:
+    $ref: './auth/sign-in.yaml'
+
+  /auth/verify-email:
+    $ref: './auth/verify-email.yaml'
+
+  /auth/resend-email:
+    $ref: './auth/resend-email.yaml'
+
+

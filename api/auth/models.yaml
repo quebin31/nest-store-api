@@ -1,0 +1,45 @@
+BaseAuthReqBody:
+  type: object
+  properties:
+    email:
+      type: string
+      format: email
+    password:
+      type: string
+      format: password
+      minLength: 8
+      maxLength: 32
+  required: [ email, password ]
+
+SignUpReqBody:
+  type: object
+  allOf:
+    - $ref: '#/BaseAuthReqBody'
+    - properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 64
+      required: [ name ]
+
+SignInReqBody:
+  type: object
+  allOf:
+    - $ref: '#/BaseAuthReqBody'
+
+CommonAuthResBody:
+  type: object
+  properties:
+    userId:
+      type: string
+      format: uuid
+    accessToken:
+      type: string
+      format: jwt
+
+VerifyEmailReqBody:
+  type: object
+  properties:
+    verificationCode:
+      type: string
+  required: [ verificationCode ]
