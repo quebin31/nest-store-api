@@ -1,0 +1,99 @@
+Category:
+  type: object
+  properties:
+    name:
+      description: Unique category name, not meant to be used as display name
+      type: string
+      pattern: '^[a-z][a-z_]+$'
+    displayName:
+      description: Display name
+      type: string
+
+ProductCategoriesResBody:
+  type: object
+  properties:
+    categories:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: '#/Category'
+
+# Multipart schema
+CreateProductReqBody:
+  type: object
+  properties:
+    # First part
+    product:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 10
+          maxLength: 64
+        description:
+          type: string
+          minLength: 10
+          maxLength: 256
+        price:
+          description: Will be rounded to two decimals.
+          type: number
+          format: float
+        categoryName:
+          description: The category name, not to be confused with its display name.
+          type: string
+          pattern: '^[a-z][a-z_]+$'
+        active:
+          description: Whether the post will be active immediately
+          type: boolean
+          default: false
+      required: [ name, description, price, categoryName ]
+    # Second part
+    thumbnail:
+      type: string
+      format: binary
+
+ProductResBody:
+  type: object
+  properties:
+    name:
+      type: string
+    description:
+      type: string
+    price:
+      description: Price rounded to two decimals.
+      type: number
+      format: float
+    active:
+      description: Whether or not the product is active.
+      type: boolean
+    category:
+      type: object
+      allOf:
+        - $ref: '#/Category'
+    thumbnailUrl:
+      type: string
+      format: url
+    images:
+      type: array
+      items:
+        description: Image url
+        type: string
+        format: url
+
+ProductsPageResBody:
+  type: object
+  properties:
+    products:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: '#/ProductResBody'
+    length:
+      description: Number of returned posts.
+      type: integer
+    cursor:
+      description: To get next page from where the returned results end.
+      type: string
+      format: date-time

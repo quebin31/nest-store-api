@@ -1,0 +1,13 @@
+get:
+  summary: Get available product categories
+  tags:
+    - Categories
+  operationId: getProductCategories
+  security: [ ]
+  responses:
+    200:
+      description: Successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/ProductCategoriesResBody'

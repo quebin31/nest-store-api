@@ -32,3 +32,9 @@ paths:
 
   /users/{id}:
     $ref: './users/user-by-id.yaml'
+
+  /products/categories:
+    $ref: './products/products-categories.yaml'
+
+  /products:
+    $ref: './products/products.yaml'
