@@ -57,16 +57,26 @@ CreateProductReqBody:
     thumbnail:
       type: string
       format: binary
-  required: [ product, thumbnail ]
+    # Images part
+    images:
+      type: array
+      minItems: 1
+      maxItems: 5
+      items:
+        type: string
+        format: binary
+  required: [ product, thumbnail, images ]
 
 # Multipart schema
 UpdateProductReqBody:
   type: object
   properties:
+    # First part
     product:
       type: object
       allOf:
         - $ref: '#/ProductBaseInput'
+    # Second part
     thumbnail:
       type: string
       format: binary
