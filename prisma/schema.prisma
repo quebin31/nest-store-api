@@ -2,10 +2,140 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+    user
+    manager
+    admin
+
+    @@map("role")
+}
+
+model User {
+    id        String   @id @default(uuid()) @db.Uuid
+    createdAt DateTime @default(now()) @map("created_at")
+
+    email      String
+    password   String
+    name       String
+    role       Role      @default(user)
+    verifiedAt DateTime? @map("verified_at")
+
+    products  Product[]
+    cartItems CartItem[]
+    favorites ProductUserFavorite[]
+    orders    Order[]
+
+    @@map("users")
+}
+
+model Category {
+    name        String    @id
+    displayName String    @map("display_name")
+    products    Product[]
+
+    @@map("categories")
+}
+
+enum ProductState {
+    active
+    disabled
+    deleted
+
+    @@map("product_state")
+}
+
+model Product {
+    id        String   @id @default(uuid()) @db.Uuid
+    createdAt DateTime @unique @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    name         String
+    description  String
+    price        Decimal        @db.Decimal(10, 2)
+    thumbnailUrl String?        @map("thumbnail_url")
+    state        ProductState   @default(disabled)
+    images       ProductImage[]
+
+    categoryName String   @map("category_name")
+    category     Category @relation(fields: [categoryName], references: [name])
+
+    createdById String @map("created_by_id") @db.Uuid
+    createdBy   User   @relation(fields: [createdById], references: [id])
+
+    inCartItems CartItem[]
+    inFavorites ProductUserFavorite[]
+    inOrders    OrderItem[]
+
+    @@map("products")
+}
+
+model ProductImage {
+    id        String   @id @default(uuid()) @db.Uuid
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    imageUrl String @map("image_url")
+
+    productId String  @map("product_id") @db.Uuid
+    product   Product @relation(fields: [productId], references: [id])
+
+    @@map("product_images")
+}
+
+model CartItem {
+    userId    String @map("user_id") @db.Uuid
+    productId String @map("product_id") @db.Uuid
+
+    quantity Int
+
+    user    User    @relation(fields: [userId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
+
+    @@id([userId, productId])
+    @@map("cart_items")
+}
+
+model ProductUserFavorite {
+    userId    String @map("user_id") @db.Uuid
+    productId String @map("product_id") @db.Uuid
+
+    user    User    @relation(fields: [userId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
+
+    @@id([userId])
+    @@map("product_user_favorites")
+}
+
+model Order {
+    id        String   @id @default(uuid()) @db.Uuid
+    createdAt DateTime @unique @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    items OrderItem[]
+
+    userId String @map("user_id") @db.Uuid
+    user   User   @relation(fields: [userId], references: [id])
+
+    @@map("orders")
+}
+
+model OrderItem {
+    orderId   String @map("order_id") @db.Uuid
+    productId String @map("product_id") @db.Uuid
+
+    quantity Int
+
+    order   Order   @relation(fields: [orderId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
+
+    @@id([orderId, productId])
+    @@map("orders_items")
 }
