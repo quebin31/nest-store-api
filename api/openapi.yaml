@@ -31,7 +31,7 @@ paths:
     $ref: './auth/resend-email.yaml'
 
   /users/{id}:
-    $ref: './users/user-by-id.yaml'
+    $ref: './users/users-by-id.yaml'
 
   /products/categories:
     $ref: './products/products-categories.yaml'
