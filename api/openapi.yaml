@@ -30,4 +30,5 @@ paths:
   /auth/resend-email:
     $ref: './auth/resend-email.yaml'
 
-
+  /users/{id}:
+    $ref: './users/user-by-id.yaml'

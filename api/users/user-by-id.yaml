@@ -1,0 +1,38 @@
+summary: Operations for a user
+parameters:
+  - $ref: '../params.yaml#/components/parameters/id'
+get:
+  summary: Get user information
+  description: Returns extra information if the authenticated user is querying their own information.
+  tags:
+    - Users
+  operationId: getUser
+  responses:
+    200:
+      description: Successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/UserResBody'
+patch:
+  summary: Update user information
+  description: |
+    Updating the email will change the verified state of the user to `false`, and a new verification
+    email will be sent.
+  tags:
+    - Users
+  operationId: updateUser
+  requestBody:
+    description: New user information
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/UpdateUserReqBody'
+  responses:
+    200:
+      description: Successfully updated.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/UserResBody'

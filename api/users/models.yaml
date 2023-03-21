@@ -1,0 +1,35 @@
+UserResBody:
+  type: object
+  properties:
+    name:
+      description: User registered name.
+      type: string
+    email:
+      description: Available if the user authenticated is the owner.
+      type: string
+      format: email
+      nullable: true
+    role:
+      type: string
+      enum: [ user, manager, admin ]
+    verifiedAt:
+      description: The date when the user verified their email.
+      type: string
+      format: date-time
+      nullable: true
+    verified:
+      description: Whether or not the user has verified their email.
+      type: boolean
+
+UpdateUserReqBody:
+  type: object
+  properties:
+    name:
+      description: New user name
+      type: string
+      minLength: 2
+      maxLength: 64
+    email:
+      description: New user email (needs to be verified afterwards)
+      type: string
+      format: email
