@@ -1,0 +1,39 @@
+post:
+  summary: Add a product to the cart
+  tags:
+    - Shopping Cart
+  operationId: addProductToCart
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/AddCartItemReqBody'
+  responses:
+    200:
+      description: Product was successfully added to cart.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/CartItemResBody'
+get:
+  summary: Get cart items
+  tags:
+    - Shopping Cart
+  operationId: getCartItems
+  parameters:
+    - name: sort
+      in: query
+      required: false
+      description: Sort order (chronological)
+      schema:
+        type: string
+        enum: [ desc, asc ]
+        default: desc
+  responses:
+    200:
+      description: Successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/CartItemsResBody'

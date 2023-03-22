@@ -1,0 +1,36 @@
+CartItemResBody:
+  type: object
+  allOf:
+    - $ref: '../products/models.yaml#/ProductResBody'
+    - properties:
+        quantity:
+          description: The quantity selected
+          type: integer
+
+CartItemsResBody:
+  type: array
+  items:
+    type: object
+    allOf:
+      - $ref: '#/CartItemResBody'
+
+AddCartItemReqBody:
+  type: object
+  properties:
+    productId:
+      description: Product's id
+      type: string
+      format: uuid
+    quantity:
+      type: integer
+      minimum: product.minQuantity
+      maximum: product.maxQuantity
+  required: [ productId, quantity ]
+
+UpdateCartItemReqBody:
+  type: object
+  properties:
+    quantity:
+      type: integer
+      minimum: product.minQuantity
+      maximum: product.maxQuantity

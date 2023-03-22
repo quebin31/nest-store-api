@@ -1,0 +1,29 @@
+parameters:
+  - $ref: '../common/params.yaml#/components/parameters/productId'
+patch:
+  summary: Update a cart item
+  tags:
+    - Shopping Cart
+  operationId: updateCartItem
+  requestBody:
+    description: Updated information
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/UpdateCartItemReqBody'
+  responses:
+    200:
+      description: Successfully updated.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/CartItemResBody'
+delete:
+  summary: Delete a cart item
+  tags:
+    - Shopping Cart
+  operationId: deleteCartItem
+  responses:
+    204:
+      description: The cart item was successfully deleted.

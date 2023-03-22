@@ -56,3 +56,9 @@ paths:
 
   /favorites/{id}:
     $ref: './favorites/favorites-by-id.yaml'
+
+  /cart-items:
+    $ref: './cart-items/cart-items.yaml'
+
+  /cart-items/{id}:
+    $ref: './cart-items/cart-items-by-id.yaml'
