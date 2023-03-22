@@ -7,7 +7,7 @@ patch:
     - Products
   operationId: updateProduct
   requestBody:
-    description: New product information
+    description: Updated product information
     required: true
     content:
       application/json:

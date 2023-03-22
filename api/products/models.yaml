@@ -38,10 +38,6 @@ ProductBaseInput:
       description: The category name, not to be confused with its display name.
       type: string
       pattern: '^[a-z][a-z_]+$'
-    active:
-      description: Whether the post will be active immediately
-      type: boolean
-      default: false
 
 # Multipart schema
 CreateProductReqBody:
@@ -52,34 +48,33 @@ CreateProductReqBody:
       type: object
       allOf:
         - $ref: '#/ProductBaseInput'
+        - properties:
+            active:
+              description: Whether or not the product is active.
+              type: boolean
+              default: false
       required: [ name, description, price, categoryName ]
-    # Second part
-    thumbnail:
-      type: string
-      format: binary
     # Images part
     images:
+      description: |
+        Images part, requires at least one image, the first one gets to be used
+        as the thumbnail.
       type: array
       minItems: 1
       maxItems: 5
       items:
         type: string
         format: binary
-  required: [ product, thumbnail, images ]
+  required: [ product, images ]
 
-# Multipart schema
 UpdateProductReqBody:
   type: object
-  properties:
-    # First part
-    product:
-      type: object
-      allOf:
-        - $ref: '#/ProductBaseInput'
-    # Second part
-    thumbnail:
-      type: string
-      format: binary
+  allOf:
+    - $ref: '#/ProductBaseInput'
+    - properties:
+        active:
+          description: Whether or not the product is active.
+          type: boolean
 
 ProductResBody:
   type: object
@@ -105,9 +100,14 @@ ProductResBody:
     images:
       type: array
       items:
-        description: Image url
-        type: string
-        format: url
+        type: object
+        properties:
+          imageId:
+            type: string
+            format: uuid
+          imageUrl:
+            type: string
+            format: url
 
 ProductsPageResBody:
   type: object
