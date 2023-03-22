@@ -102,9 +102,23 @@ UpdateProductReqBody:
             stock. Will fail if the resultant available stock is negative.
           type: integer
 
-ProductResBody:
+ProductImage:
   type: object
   properties:
+    imageId:
+      type: string
+      format: uuid
+    imageUrl:
+      type: string
+      format: url
+
+ProductBase:
+  type: object
+  properties:
+    id:
+      description: Product's id
+      type: string
+      format: uuid
     name:
       type: string
     description:
@@ -120,29 +134,30 @@ ProductResBody:
       type: object
       allOf:
         - $ref: '#/Category'
-    minQuantity:
-      description: The minimum quantity that can be bought
-      type: integer
-    maxQuantity:
-      description: The maximum quantity that can be bought
-      type: integer
-    availableStock:
-      description: How much stock of the product is currently available
-      type: integer
     thumbnailUrl:
       type: string
       format: url
-    images:
-      type: array
-      items:
-        type: object
-        properties:
-          imageId:
-            type: string
-            format: uuid
-          imageUrl:
-            type: string
-            format: url
+
+ProductResBody:
+  type: object
+  allOf:
+    - $ref: '#/ProductBase'
+    - properties:
+        minQuantity:
+          description: The minimum quantity that can be bought
+          type: integer
+        maxQuantity:
+          description: The maximum quantity that can be bought
+          type: integer
+        availableStock:
+          description: How much stock of the product is currently available
+          type: integer
+        images:
+          type: array
+          items:
+            type: object
+            allOf:
+              - $ref: '#/ProductImage'
 
 ProductsPageResBody:
   type: object
@@ -154,7 +169,7 @@ ProductsPageResBody:
         allOf:
           - $ref: '#/ProductResBody'
     length:
-      description: Number of returned posts.
+      description: Number of returned items.
       type: integer
       example: 25
     cursor:

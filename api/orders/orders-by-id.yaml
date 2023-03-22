@@ -1,0 +1,33 @@
+parameters:
+  - $ref: '../common/params.yaml#/components/parameters/orderId'
+get:
+  summary: Get an order information
+  tags:
+    - Orders
+  operationId: getOrder
+  responses:
+    200:
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/OrderResBody'
+patch:
+  summary: Update an order
+  tags:
+    - Orders
+  operationId: updateOrder
+  requestBody:
+    description: Updated information
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/UpdateOrderReqBody'
+  responses:
+    200:
+      description: The order was successfully updated.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/OrderResBody'

@@ -24,3 +24,11 @@ components:
       schema:
         type: string
         format: uuid
+    orderId:
+      description: Order's id
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid

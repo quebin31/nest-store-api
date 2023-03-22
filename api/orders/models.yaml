@@ -1,0 +1,108 @@
+OrderItem:
+  type: object
+  properties:
+    quantity:
+      description: The quantity selected
+      type: integer
+    lockedPrice:
+      description: Locked price at the moment of creating the order (two decimals)
+      type: number
+      format: float
+    product:
+      type: object
+      allOf:
+        - $ref: '../products/models.yaml#/ProductBase'
+
+OrderResBody:
+  type: object
+  properties:
+    id:
+      description: Order's id
+      type: string
+      format: uuid
+    createdAt:
+      description: Date of creation
+      type: string
+      format: date-time
+    updatedAt:
+      description: Date of last modification
+      type: string
+      format: date-time
+    orderItems:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: '#/OrderItem'
+
+OrdersPageResBody:
+  type: object
+  properties:
+    orders:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: '#/OrderResBody'
+    length:
+      description: Number of returned items.
+      type: integer
+      example: 25
+    cursor:
+      description: To get next page from where the returned results end.
+      type: string
+      format: date-time
+
+UpdateOrderReqBody:
+  type: object
+  oneOf:
+    - properties:
+        state:
+          description: |
+            To transition into the `confirmed` state, possibly with changes to the order.
+          type: string
+          enum: [ confirmed ]
+        products:
+          description: Updates to individual products.
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                description: Product id to update
+                type: string
+                format: uuid
+              quantity:
+                description: |
+                  Updated quantity, if set to `0` the item will be removed from the order.
+                type: integer
+                minimum: product.minQuantity or 0
+                maximum: product.maxQuantity
+              price:
+                description: |
+                  Updated locked price, wont affect the original price (rounded to two decimals)
+                type: number
+                format: float
+            required: [ id ]
+      required: [ state ]
+    - properties:
+        state:
+          description: |
+            To transition into the `received` state (final state), no extra data.
+          type: string
+          enum: [ received ]
+      required: [ state ]
+    - properties:
+        state:
+          description: |
+            To transition into the `canceled` state with a cancel code and optional reason.
+          type: string
+          enum: [ canceled ]
+        cancelCode:
+          type: string
+          pattern: '^[a-z][a-z_]+$'
+        cancelReason:
+          type: string
+          minLength: 10
+          maxLength: 140
+      required: [ state, cancelCode ]

@@ -62,3 +62,9 @@ paths:
 
   /cart-items/{id}:
     $ref: './cart-items/cart-items-by-id.yaml'
+
+  /orders:
+    $ref: './orders/orders.yaml'
+
+  /orders/{id}:
+    $ref: './orders/orders-by-id.yaml'

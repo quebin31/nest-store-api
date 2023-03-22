@@ -1,0 +1,73 @@
+post:
+  summary: Create an order
+  description: |
+    Will create a new order from the items saved in the shopping cart identified by the
+    given JWT.
+  tags:
+    - Orders
+  operationId: createOrder
+  responses:
+    201:
+      description: The order was successfully created.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/OrderResBody'
+get:
+  summary: Get orders
+  tags:
+    - Orders
+  operationId: getOrders
+  parameters:
+    - name: sort
+      in: query
+      required: false
+      description: Sort order (by creation time)
+      schema:
+        type: string
+        enum: [ desc, asc ]
+        default: desc
+    - name: cursor
+      in: query
+      required: false
+      description: Cursor from where the new list will start
+      schema:
+        type: string
+        format: date-time
+    - name: take
+      in: query
+      required: false
+      description: How many products to return
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 50
+        default: 25
+    - name: state
+      in: query
+      required: false
+      description: Order state, separated by commas, ex. `?state=pending,confirmed`
+      style: form
+      explode: false
+      schema:
+        type: array
+        default: [ pending ]
+        items:
+          type: string
+          enum: [ pending, confirmed, received, canceled ]
+    - name: user
+      in: query
+      required: false
+      description: |
+        Filter by a specific user id, if value is `self` and a valid JWT is provided then the returned
+        orders will be those belonging to the authenticated user.
+      schema:
+        type: string
+        enum: [ <uuid>, self ]
+  responses:
+    200:
+      description: Successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/OrdersPageResBody'
