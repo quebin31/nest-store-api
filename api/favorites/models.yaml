@@ -1,0 +1,14 @@
+AddFavoriteReqBody:
+  type: object
+  properties:
+    productId:
+      description: The product's id to add to favorites.
+      type: string
+      format: uuid
+
+FavoritesResBody:
+  type: array
+  items:
+    type: object
+    allOf:
+      - $ref: '../products/models.yaml#/ProductResBody'

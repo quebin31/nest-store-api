@@ -1,0 +1,10 @@
+parameters:
+  - $ref: '../common/params.yaml#/components/parameters/productId'
+delete:
+  summary: Delete product from favorites
+  tags:
+    - Favorites
+  operationId: deleteFromFavorites
+  responses:
+    204:
+      description: Successfully removed product from favorites.

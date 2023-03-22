@@ -50,3 +50,9 @@ paths:
 
   /products/images/{id}:
     $ref: './products/products-images-by-id.yaml'
+
+  /favorites:
+    $ref: './favorites/favorites.yaml'
+
+  /favorites/{id}:
+    $ref: './favorites/favorites-by-id.yaml'

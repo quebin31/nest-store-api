@@ -1,0 +1,39 @@
+post:
+  summary: Add product to favorites
+  tags:
+    - Favorites
+  operationId: addToFavorites
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './models.yaml#/AddFavoriteReqBody'
+  responses:
+    200:
+      description: Product was successfully added to favorites.
+      content:
+        application/json:
+          schema:
+            $ref: '../products/models.yaml#/ProductResBody'
+get:
+  summary: Get favorites
+  tags:
+    - Favorites
+  operationId: getFavorites
+  parameters:
+    - name: sort
+      in: query
+      required: false
+      description: Sort order (chronological)
+      schema:
+        type: string
+        enum: [ desc, asc ]
+        default: desc
+  responses:
+    200:
+      description: Successful response.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/FavoritesResBody'
