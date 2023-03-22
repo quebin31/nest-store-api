@@ -1,18 +1,30 @@
 CartItemResBody:
   type: object
-  allOf:
-    - $ref: '../products/models.yaml#/ProductResBody'
-    - properties:
-        quantity:
-          description: The quantity selected
-          type: integer
+  properties:
+    createdAt:
+      description: Date of creation
+      type: string
+      format: date-time
+    updatedAt:
+      description: Date of last modification
+      type: string
+      format: date-time
+    quantity:
+      description: The quantity selected
+      type: integer
+    product:
+      allOf:
+        - $ref: '../products/models.yaml#/ProductResBody'
 
 CartItemsResBody:
-  type: array
-  items:
-    type: object
-    allOf:
-      - $ref: '#/CartItemResBody'
+  type: object
+  properties:
+    cartItems:
+      type: array
+      items:
+        type: object
+        allOf:
+          - $ref: '#/CartItemResBody'
 
 AddCartItemReqBody:
   type: object

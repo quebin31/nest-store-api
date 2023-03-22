@@ -6,9 +6,22 @@ AddFavoriteReqBody:
       type: string
       format: uuid
 
+FavoriteResBody:
+  type: object
+  properties:
+    createdAt:
+      description: Date of creation
+      type: string
+      format: date-time
+    product:
+      type: object
+      allOf:
+        - $ref: '../products/models.yaml#/ProductResBody'
+
 FavoritesResBody:
   type: array
   items:
     type: object
     allOf:
-      - $ref: '../products/models.yaml#/ProductResBody'
+      - $ref: '#/FavoriteResBody'
+

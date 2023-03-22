@@ -10,12 +10,12 @@ post:
         schema:
           $ref: './models.yaml#/AddFavoriteReqBody'
   responses:
-    200:
+    201:
       description: Product was successfully added to favorites.
       content:
         application/json:
           schema:
-            $ref: '../products/models.yaml#/ProductResBody'
+            $ref: './models.yaml#/FavoriteResBody'
 get:
   summary: Get favorites
   tags:

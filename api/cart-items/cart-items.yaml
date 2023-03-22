@@ -10,7 +10,7 @@ post:
         schema:
           $ref: './models.yaml#/AddCartItemReqBody'
   responses:
-    200:
+    201:
       description: Product was successfully added to cart.
       content:
         application/json:
