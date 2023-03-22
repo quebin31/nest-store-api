@@ -56,6 +56,8 @@ CREATE TABLE "product_images" (
 CREATE TABLE "cart_items" (
     "user_id" UUID NOT NULL,
     "product_id" UUID NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "quantity" INTEGER NOT NULL,
 
     CONSTRAINT "cart_items_pkey" PRIMARY KEY ("user_id","product_id")
@@ -65,6 +67,8 @@ CREATE TABLE "cart_items" (
 CREATE TABLE "product_user_favorites" (
     "user_id" UUID NOT NULL,
     "product_id" UUID NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "product_user_favorites_pkey" PRIMARY KEY ("user_id")
 );
@@ -83,6 +87,7 @@ CREATE TABLE "orders" (
 CREATE TABLE "orders_items" (
     "order_id" UUID NOT NULL,
     "product_id" UUID NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "quantity" INTEGER NOT NULL,
 
     CONSTRAINT "orders_items_pkey" PRIMARY KEY ("order_id","product_id")
