@@ -98,6 +98,7 @@ CREATE TABLE "orders_items" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "quantity" INTEGER NOT NULL,
+    "locked_price" DECIMAL(10,2) NOT NULL,
 
     CONSTRAINT "orders_items_pkey" PRIMARY KEY ("order_id","product_id")
 );

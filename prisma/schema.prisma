@@ -155,7 +155,8 @@ model OrderItem {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    quantity Int
+    quantity    Int
+    lockedPrice Decimal @map("locked_price") @db.Decimal(10, 2)
 
     order   Order   @relation(fields: [orderId], references: [id])
     product Product @relation(fields: [productId], references: [id])
