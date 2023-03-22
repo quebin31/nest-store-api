@@ -28,10 +28,11 @@ model User {
     role       Role      @default(user)
     verifiedAt DateTime? @map("verified_at")
 
-    products  Product[]
-    cartItems CartItem[]
-    favorites ProductUserFavorite[]
-    orders    Order[]
+    products      Product[]
+    cartItems     CartItem[]
+    favorites     ProductUserFavorite[]
+    orders        Order[]
+    cancelReasons OrderCancelReason[]
 
     @@map("users")
 }
@@ -122,15 +123,28 @@ model ProductUserFavorite {
     @@map("product_user_favorites")
 }
 
+enum OrderState {
+    pending
+    confirmed
+    received
+    canceled
+
+    @@map("order_state")
+}
+
 model Order {
     id        String   @id @default(uuid()) @db.Uuid
     createdAt DateTime @unique @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
+    state OrderState
     items OrderItem[]
 
     userId String @map("user_id") @db.Uuid
     user   User   @relation(fields: [userId], references: [id])
+
+    receivedAt   DateTime?          @map("received_at")
+    cancelReason OrderCancelReason?
 
     @@map("orders")
 }
@@ -139,6 +153,7 @@ model OrderItem {
     orderId   String   @map("order_id") @db.Uuid
     productId String   @map("product_id") @db.Uuid
     createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
     quantity Int
 
@@ -147,4 +162,31 @@ model OrderItem {
 
     @@id([orderId, productId])
     @@map("orders_items")
+}
+
+model OrderCancelReason {
+    id        String   @id @db.Uuid
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    codeId String          @map("code_id")
+    code   OrderCancelCode @relation(fields: [codeId], references: [code])
+    reason String?
+
+    orderId String @unique @map("order_id") @db.Uuid
+    order   Order  @relation(fields: [orderId], references: [id])
+
+    canceledById String @map("canceled_by_id") @db.Uuid
+    canceledBy   User   @relation(fields: [canceledById], references: [id])
+
+    @@map("orders_cancel_reasons")
+}
+
+model OrderCancelCode {
+    createdAt        DateTime            @default(now()) @map("created_at")
+    code             String              @id
+    description      String
+    inCanceledOrders OrderCancelReason[]
+
+    @@map("orders_cancel_codes")
 }

@@ -4,6 +4,9 @@ CREATE TYPE "role" AS ENUM ('user', 'manager', 'admin');
 -- CreateEnum
 CREATE TYPE "product_state" AS ENUM ('active', 'inactive', 'deleted');
 
+-- CreateEnum
+CREATE TYPE "order_state" AS ENUM ('pending', 'confirmed', 'received', 'canceled');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" UUID NOT NULL,
@@ -81,7 +84,9 @@ CREATE TABLE "orders" (
     "id" UUID NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "state" "order_state" NOT NULL,
     "user_id" UUID NOT NULL,
+    "received_at" TIMESTAMP(3),
 
     CONSTRAINT "orders_pkey" PRIMARY KEY ("id")
 );
@@ -91,9 +96,32 @@ CREATE TABLE "orders_items" (
     "order_id" UUID NOT NULL,
     "product_id" UUID NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
     "quantity" INTEGER NOT NULL,
 
     CONSTRAINT "orders_items_pkey" PRIMARY KEY ("order_id","product_id")
+);
+
+-- CreateTable
+CREATE TABLE "orders_cancel_reasons" (
+    "id" UUID NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "code_id" TEXT NOT NULL,
+    "reason" TEXT,
+    "order_id" UUID NOT NULL,
+    "canceled_by_id" UUID NOT NULL,
+
+    CONSTRAINT "orders_cancel_reasons_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "orders_cancel_codes" (
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "code" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+
+    CONSTRAINT "orders_cancel_codes_pkey" PRIMARY KEY ("code")
 );
 
 -- CreateIndex
@@ -101,6 +129,9 @@ CREATE UNIQUE INDEX "products_created_at_key" ON "products"("created_at");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "orders_created_at_key" ON "orders"("created_at");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "orders_cancel_reasons_order_id_key" ON "orders_cancel_reasons"("order_id");
 
 -- AddForeignKey
 ALTER TABLE "products" ADD CONSTRAINT "products_category_name_fkey" FOREIGN KEY ("category_name") REFERENCES "categories"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -131,3 +162,12 @@ ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_order_id_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders_cancel_reasons" ADD CONSTRAINT "orders_cancel_reasons_code_id_fkey" FOREIGN KEY ("code_id") REFERENCES "orders_cancel_codes"("code") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders_cancel_reasons" ADD CONSTRAINT "orders_cancel_reasons_order_id_fkey" FOREIGN KEY ("order_id") REFERENCES "orders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "orders_cancel_reasons" ADD CONSTRAINT "orders_cancel_reasons_canceled_by_id_fkey" FOREIGN KEY ("canceled_by_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
