@@ -38,6 +38,15 @@ ProductBaseInput:
       description: The category name, not to be confused with its display name.
       type: string
       pattern: '^[a-z][a-z_]+$'
+    minQuantity:
+      description: The minimum quantity that can be bought
+      type: integer
+      minimum: 1
+      maximum: maxQuantity
+    maxQuantity:
+      description: The maximum quantity that can be bought
+      type: integer
+      minimum: minQuantity
 
 # Multipart schema
 CreateProductReqBody:
@@ -53,7 +62,7 @@ CreateProductReqBody:
               description: Whether or not the product is active.
               type: boolean
               default: false
-      required: [ name, description, price, categoryName ]
+      required: [ name, description, price, categoryName, minQuantity, maxQuantity ]
     # Images part
     images:
       description: |
@@ -94,6 +103,12 @@ ProductResBody:
       type: object
       allOf:
         - $ref: '#/Category'
+    minQuantity:
+      description: The minimum quantity that can be bought
+      type: integer
+    maxQuantity:
+      description: The maximum quantity that can be bought
+      type: integer
     thumbnailUrl:
       type: string
       format: url
