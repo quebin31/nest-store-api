@@ -63,8 +63,10 @@ model Product {
     thumbnailUrl String?        @map("thumbnail_url")
     state        ProductState   @default(inactive)
     images       ProductImage[]
-    minQuantity  Int            @default(1)
-    maxQuantity  Int            @default(1)
+
+    minQuantity       Int
+    maxQuantity       Int
+    availableQuantity Int
 
     categoryName String   @map("category_name")
     category     Category @relation(fields: [categoryName], references: [name])
