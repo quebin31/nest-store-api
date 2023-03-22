@@ -62,8 +62,8 @@ CreateProductReqBody:
               description: Whether or not the product is active.
               type: boolean
               default: false
-            availableQuantity:
-              description: Initial available quantity
+            availableStock:
+              description: Initial available stock.
               type: integer
               minimum: 1
       required:
@@ -73,7 +73,7 @@ CreateProductReqBody:
         - categoryName
         - minQuantity
         - maxQuantity
-        - availableQuantity
+        - availableStock
     # Images part
     images:
       description: |
@@ -95,12 +95,11 @@ UpdateProductReqBody:
         active:
           description: Whether or not the product is active.
           type: boolean
-        availableQuantityDelta:
+        availableStockDelta:
           description: |
-            Delta to be applied to the current available quantity, for example,
-            a delta of 5 will add 5 to the available quantity, while a delta of 
-            -2 will subtract 2 from the current available quantity. Will fail if
-            the resultant available quantity is negative.
+            Delta to be applied to the current available stock, for example, a delta of 5 will add 
+            5 to the available stock, while a delta of -2 will subtract 2 from the current available 
+            stock. Will fail if the resultant available stock is negative.
           type: integer
 
 ProductResBody:
@@ -127,8 +126,8 @@ ProductResBody:
     maxQuantity:
       description: The maximum quantity that can be bought
       type: integer
-    availableQuantity:
-      description: How much quantity of the product is available
+    availableStock:
+      description: How much stock of the product is currently available
       type: integer
     thumbnailUrl:
       type: string

@@ -35,9 +35,9 @@ CREATE TABLE "products" (
     "price" DECIMAL(10,2) NOT NULL,
     "thumbnail_url" TEXT,
     "state" "product_state" NOT NULL DEFAULT 'inactive',
-    "minQuantity" INTEGER NOT NULL,
-    "maxQuantity" INTEGER NOT NULL,
-    "availableQuantity" INTEGER NOT NULL,
+    "min_quantity" INTEGER NOT NULL,
+    "max_quantity" INTEGER NOT NULL,
+    "available_stock" INTEGER NOT NULL,
     "category_name" TEXT NOT NULL,
     "created_by_id" UUID NOT NULL,
 

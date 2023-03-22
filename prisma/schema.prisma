@@ -64,9 +64,9 @@ model Product {
     state        ProductState   @default(inactive)
     images       ProductImage[]
 
-    minQuantity       Int
-    maxQuantity       Int
-    availableQuantity Int
+    minQuantity    Int @map("min_quantity")
+    maxQuantity    Int @map("max_quantity")
+    availableStock Int @map("available_stock")
 
     categoryName String   @map("category_name")
     category     Category @relation(fields: [categoryName], references: [name])
