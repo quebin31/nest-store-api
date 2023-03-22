@@ -126,3 +126,19 @@ ProductsPageResBody:
       description: To get next page from where the returned results end.
       type: string
       format: date-time
+
+UploadProductImagesReqBody:
+  type: object
+  properties:
+    image:
+      type: string
+      format: binary
+  required: [ image ]
+
+UpdateProductImageReqBody:
+  type: object
+  properties:
+    image:
+      type: string
+      format: binary
+  required: [ image ]

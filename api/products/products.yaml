@@ -1,6 +1,6 @@
 post:
   summary: Create new product
-  description: Create a new product, only managers or admins can create new products.
+  description: Create a new product, only managers can create new products.
   tags:
     - Products
   operationId: createProduct

@@ -1,6 +1,23 @@
 components:
   parameters:
-    id:
+    userId:
+      description: User's id
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    productId:
+      description: Product's id
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    imageId:
+      description: Product's image id
       name: id
       in: path
       required: true

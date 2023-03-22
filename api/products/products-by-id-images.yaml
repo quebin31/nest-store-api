@@ -1,0 +1,25 @@
+parameters:
+  - $ref: '../common/params.yaml#/components/parameters/productId'
+post:
+  summary: Upload a new product image
+  description: |
+    There's a maximum of five images per product. The request will fail if one tries to
+    upload a new image that would increase the number of images further than five. 
+    Only managers can upload a new product image.
+  tags:
+    - Product images
+  operationId: uploadProductImage
+  requestBody:
+    description: Image
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: './models.yaml#/UploadProductImagesReqBody'
+  responses:
+    200:
+      description: Image(s) successfully uploaded.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/ProductResBody'

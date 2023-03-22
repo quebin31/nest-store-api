@@ -44,3 +44,9 @@ paths:
 
   /products/{id}:
     $ref: './products/products-by-id.yaml'
+
+  /products/{id}/images:
+    $ref: './products/products-by-id-images.yaml'
+
+  /products/images/{id}:
+    $ref: './products/products-images-by-id.yaml'

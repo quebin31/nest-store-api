@@ -1,8 +1,9 @@
 summary: Operations for a specific product
 parameters:
-  - $ref: '../common/params.yaml#/components/parameters/id'
+  - $ref: '../common/params.yaml#/components/parameters/productId'
 patch:
   summary: Update a product information
+  description: Only managers can update a product.
   tags:
     - Products
   operationId: updateProduct
@@ -35,6 +36,7 @@ get:
             $ref: './models.yaml#/ProductResBody'
 delete:
   summary: Delete a product
+  description: Only managers can delete a product.
   tags:
     - Products
   operationId: deleteProduct

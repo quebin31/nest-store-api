@@ -1,0 +1,40 @@
+summary: Operations on a product's images
+parameters:
+  - $ref: '../common/params.yaml#/components/parameters/imageId'
+patch:
+  summary: Update a product image
+  description: |
+    To update the thumbnail of a product use the id of the first image returned in
+    the product response. Only managers can update a product image.
+  tags:
+    - Product images
+  operationId: updateProductImage
+  requestBody:
+    description: Updated image
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          $ref: './models.yaml#/UpdateProductImageReqBody'
+  responses:
+    200:
+      description: Product's image successfully updated.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/ProductResBody'
+delete:
+  summary: Delete a product image
+  description: |
+    Fails if there's only one image available at the moment. Only managers can delete a 
+    product image.
+  tags:
+    - Product images
+  operationId: deleteProductImage
+  responses:
+    200:
+      description: Product's image successfully deleted.
+      content:
+        application/json:
+          schema:
+            $ref: './models.yaml#/ProductResBody'
