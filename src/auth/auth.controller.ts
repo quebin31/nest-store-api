@@ -1,6 +1,9 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up-dto';
+import { LocalAuthGuard } from './local-auth.guard';
+import { User } from '@prisma/client';
+import { Request } from 'express';
 
 @Controller({ path: '/auth', version: '1' })
 export class AuthController {
@@ -12,9 +15,10 @@ export class AuthController {
     return this.authService.registerUser(signUpDto);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('/sign-in')
-  async signIn() {
-    throw new Error('Not yet implemented');
+  async signIn(@Req() req: Request) {
+    return this.authService.loginUser(req.user as User);
   }
 
   @Post('/verify-email')
