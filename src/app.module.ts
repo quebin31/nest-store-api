@@ -1,7 +1,8 @@
 import { Module, ModuleMetadata } from '@nestjs/common';
+import { configModuleForRoot } from './config';
 
 const moduleMetadata: ModuleMetadata = {
-  imports: [],
+  imports: [configModuleForRoot()],
 };
 
 @Module(moduleMetadata)
