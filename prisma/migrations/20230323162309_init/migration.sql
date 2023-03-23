@@ -126,6 +126,9 @@ CREATE TABLE "orders_cancel_codes" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "products_created_at_key" ON "products"("created_at");
 
 -- CreateIndex
