@@ -3,11 +3,19 @@ import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { Config } from './config';
 import { ConfigService } from '@nestjs/config';
+import { PrismaService } from './prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Global configuration
   app.enableVersioning({ type: VersioningType.URI });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+  // Prisma shutdown hooks
+  const prismaService = await app.get(PrismaService);
+  await prismaService.enableShutdownHooks(app);
+
   const configService: ConfigService<Config, true> = app.get(ConfigService);
   const port = configService.get('port', { infer: true });
   await app.listen(parseInt(port));

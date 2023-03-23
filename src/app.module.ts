@@ -1,10 +1,9 @@
-import { Module, ModuleMetadata } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { configModuleForRoot } from './config';
+import { PrismaModule } from './prisma/prisma.module';
 
-const moduleMetadata: ModuleMetadata = {
-  imports: [configModuleForRoot()],
-};
-
-@Module(moduleMetadata)
+@Module({
+  imports: [configModuleForRoot(), PrismaModule],
+})
 export class AppModule {
 }
