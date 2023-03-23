@@ -11,6 +11,7 @@
     "start": "nest start",
     "redoc:watch": "redocly preview-docs api/openapi.yaml",
     "redoc:build": "redocly build-docs api/openapi.yaml -o build/redoc.html",
+    "redoc:bundle": "redocly bundle api/openapi.yaml -o build/openapi.yaml",
     "setup:dev": "./scripts/setup-env.sh dev",
     "setup:test": "./scripts/setup-env.sh test",
     "migrate:dev": "dotenv -e .env.dev prisma migrate dev",
