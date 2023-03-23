@@ -5,9 +5,10 @@ import { AuthRepository } from './auth.repository';
 import { UsersModule } from '../users/users.module';
 import { jwtModuleRegister } from './jwt.module';
 import { LocalStrategy } from './local.strategy';
+import { EmailModule } from '../email/email.module';
 
 @Module({
-  imports: [jwtModuleRegister(), UsersModule],
+  imports: [jwtModuleRegister(), UsersModule, EmailModule],
   controllers: [AuthController],
   providers: [AuthRepository, AuthService, LocalStrategy],
 })
