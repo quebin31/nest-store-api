@@ -1,10 +1,9 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module, ModuleMetadata } from '@nestjs/common';
 
-@Module({
+const moduleMetadata: ModuleMetadata = {
   imports: [],
-  controllers: [AppController],
-  providers: [AppService],
-})
-export class AppModule {}
+};
+
+@Module(moduleMetadata)
+export class AppModule {
+}
