@@ -11,5 +11,9 @@ post:
         schema:
           $ref: './models.yaml#/VerifyEmailReqBody'
   responses:
-    204:
+    200:
       description: Successfully verified.
+      content:
+        application/json:
+          schema:
+            $ref: '../users/models.yaml#/UserResBody'
