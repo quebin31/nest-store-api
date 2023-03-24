@@ -8,6 +8,7 @@ import { Request } from 'express';
 
 export type UserJwtPayload = { id: string, isVerified: boolean }
 export type AuthRequest = Request & { user: UserJwtPayload }
+export type OptionalAuthRequest = Request & { user?: UserJwtPayload }
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

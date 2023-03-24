@@ -1,7 +1,7 @@
 import { AuthGuard } from '@nestjs/passport';
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { APP_GUARD, Reflector } from '@nestjs/core';
-import { IsPublicKey } from '../decorators/public';
+import { PublicOptionsKey, PublicOptions } from '../decorators/public';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
@@ -13,7 +13,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   canActivate(context: ExecutionContext) {
     const targets = [context.getHandler(), context.getClass()];
-    const isPublic = this.reflector.getAllAndOverride<boolean>(IsPublicKey, targets);
-    return isPublic || super.canActivate(context);
+    const options = this.reflector
+      .getAllAndOverride<PublicOptions | undefined>(PublicOptionsKey, targets);
+
+    if (options !== undefined) {
+      if (options.optionalAuth) super.canActivate(context);
+      return true;
+    } else {
+      return super.canActivate(context);
+    }
   }
 }
