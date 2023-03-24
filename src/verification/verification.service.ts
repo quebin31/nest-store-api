@@ -1,10 +1,11 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { SendVerificationOptions } from '../auth/auth.service';
 import { VerificationRepository } from './verification.repository';
 import { EmailService } from '../email/email.service';
 import { TooManyRequestsException } from '../errors';
 import { UsersRepository } from '../users/users.repository';
 import { pick } from '../utils/types';
+
+export type SendVerificationOptions = { id: string, email?: string }
 
 @Injectable()
 export class VerificationService {

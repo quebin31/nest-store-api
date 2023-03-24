@@ -2,18 +2,17 @@ import { SignUpDto } from './dto/sign-up.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { EventsService } from '../events/events.service';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
-
-export type SendVerificationOptions = { id: string, email?: string }
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SendVerificationEmailEvent } from '../events';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersRepository: UsersRepository,
     private jwtService: JwtService,
-    private eventsService: EventsService,
+    private eventEmitter: EventEmitter2,
   ) {
   }
 
@@ -32,7 +31,7 @@ export class AuthService {
         throw new BadRequestException('Email is already registered');
       });
 
-    this.eventsService.emitSendVerificationEmailEvent({ id: user.id, email: user.email });
+    this.eventEmitter.emit(SendVerificationEmailEvent, user);
     return this.createAuthResponse(user);
   }
 
