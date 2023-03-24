@@ -1,8 +1,9 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { SendVerificationOptions } from '../auth/auth.service';
 import { VerificationRepository } from './verification.repository';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
+import { TooManyRequestsException } from '../errors';
 
 @Injectable()
 export class VerificationService {
@@ -30,9 +31,7 @@ export class VerificationService {
 
     const requestedAt = await this.verificationRepository.getRequestedAtFor(id);
     if (requestedAt !== null && requestedAt + 60 * 1000 > Date.now()) {
-      const httpCode = HttpStatus.TOO_MANY_REQUESTS;
-      const error = 'Email verifications can only be sent every 60 seconds';
-      throw new HttpException(error, httpCode);
+      throw new TooManyRequestsException('Email verifications can only be sent every 60 seconds');
     }
 
     const code = await this.verificationRepository.createVerificationCodeFor(id);
