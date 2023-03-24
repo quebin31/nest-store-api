@@ -4,6 +4,7 @@ import { VerificationRepository } from './verification.repository';
 import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
 import { TooManyRequestsException } from '../errors';
+import { pick } from '../utils/types';
 
 @Injectable()
 export class VerificationService {
@@ -52,7 +53,27 @@ export class VerificationService {
     }
 
     const code = await this.verificationRepository.createVerificationCodeFor(id);
-    await this.verificationRepository.setRequestedAtFor(id);
     await this.emailService.sendVerificationCode(resolvedEmail, code);
+  }
+
+  async verifyUserEmail(id: string, code: string) {
+    const savedCode = await this.verificationRepository.getVerificationCodeFor(id);
+    if (savedCode === null) {
+      throw new NotFoundException(`Couldn't find an active verification process`);
+    }
+
+    if (code !== savedCode) {
+      throw new BadRequestException('Received an invalid verification code');
+    }
+
+    const user = await this.verificationRepository.updateUser(id, { isVerified: true })
+      .catch((_) => {
+        throw new NotFoundException(`User to verify doesn't exist`);
+      });
+
+    return {
+      ...pick(user, ['name', 'email', 'role', 'verifiedAt']),
+      verified: user.verifiedAt !== null,
+    }
   }
 }
