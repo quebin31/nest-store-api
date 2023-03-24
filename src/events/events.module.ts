@@ -1,10 +1,10 @@
 import { Global, Module } from '@nestjs/common';
 import { EventsService } from './events.service';
-import { AuthModule } from '../auth/auth.module';
+import { VerificationModule } from '../verification/verification.module';
 
 @Global()
 @Module({
-  imports: [AuthModule],
+  imports: [VerificationModule],
   providers: [EventsService],
   exports: [EventsService],
 })
