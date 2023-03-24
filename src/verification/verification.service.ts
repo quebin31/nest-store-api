@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { SendVerificationOptions } from '../auth/auth.service';
 import { VerificationRepository } from './verification.repository';
-import { UsersService } from '../users/users.service';
 import { EmailService } from '../email/email.service';
 import { TooManyRequestsException } from '../errors';
+import { UsersRepository } from '../users/users.repository';
 import { pick } from '../utils/types';
 
 @Injectable()
 export class VerificationService {
   constructor(
     private verificationRepository: VerificationRepository,
-    private usersService: UsersService,
+    private usersRepository: UsersRepository,
     private emailService: EmailService,
   ) {
   }
@@ -19,7 +19,7 @@ export class VerificationService {
     let isVerified = await this.verificationRepository.getIsVerifiedFor(id);
     if (isVerified !== null) return isVerified;
 
-    const user = await this.usersService.findById(id);
+    const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException('User does not exist');
     }
@@ -39,7 +39,7 @@ export class VerificationService {
     if (maybeEmail !== undefined) {
       resolvedEmail = maybeEmail;
     } else {
-      const user = await this.usersService.findById(id);
+      const user = await this.usersRepository.findById(id);
       if (!user) {
         throw new NotFoundException(`Couldn't find user to send email to`);
       }
@@ -74,6 +74,6 @@ export class VerificationService {
     return {
       ...pick(user, ['name', 'email', 'role', 'verifiedAt']),
       verified: user.verifiedAt !== null,
-    }
+    };
   }
 }

@@ -1,17 +1,17 @@
 import { SignUpDto } from './dto/sign-up.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
 import { User } from '@prisma/client';
 import { EventsService } from '../events/events.service';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { UsersRepository } from '../users/users.repository';
 
 export type SendVerificationOptions = { id: string, email?: string }
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private usersRepository: UsersRepository,
     private jwtService: JwtService,
     private eventsService: EventsService,
   ) {
@@ -26,7 +26,7 @@ export class AuthService {
   async registerUser(signUpDto: SignUpDto) {
     const { password, ...rest } = signUpDto;
     const saltedPassword = await bcrypt.hash(password, 10);
-    const user = await this.usersService
+    const user = await this.usersRepository
       .createUser({ password: saltedPassword, ...rest })
       .catch(_ => {
         throw new BadRequestException('Email is already registered');
@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findByEmail(email);
+    const user = await this.usersRepository.findByEmail(email);
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
