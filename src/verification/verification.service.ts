@@ -14,8 +14,25 @@ export class VerificationService {
   ) {
   }
 
+  async isUserVerified(id: string) {
+    let isVerified = await this.verificationRepository.getIsVerifiedFor(id);
+    if (isVerified !== null) return isVerified;
+
+    const user = await this.usersService.findById(id);
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    isVerified = user.verifiedAt !== null;
+    await this.verificationRepository.setIsVerifiedFor(user.id, isVerified);
+    return isVerified;
+  }
+
   async sendVerificationEmail(options: SendVerificationOptions) {
     const { id, email: maybeEmail } = options;
+    if (await this.isUserVerified(id)) {
+      throw new BadRequestException('User is already verified');
+    }
 
     let resolvedEmail: string;
     if (maybeEmail !== undefined) {
@@ -35,7 +52,7 @@ export class VerificationService {
     }
 
     const code = await this.verificationRepository.createVerificationCodeFor(id);
-    await this.verificationRepository.saveRequestedAtFor(id);
+    await this.verificationRepository.setRequestedAtFor(id);
     await this.emailService.sendVerificationCode(resolvedEmail, code);
   }
 }

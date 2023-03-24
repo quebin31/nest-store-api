@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { RedisModule } from './redis/redis.module';
 import { EmailModule } from './email/email.module';
 import { EventsModule } from './events/events.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { EventsModule } from './events/events.module';
     EmailModule,
     EventsModule,
   ],
+  providers: [JwtAuthGuard.appProvider],
 })
 export class AppModule {
 }

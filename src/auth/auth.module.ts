@@ -5,10 +5,12 @@ import { UsersModule } from '../users/users.module';
 import { jwtModuleRegister } from './jwt.module';
 import { LocalStrategy } from './local.strategy';
 import { EmailModule } from '../email/email.module';
+import { VerificationModule } from '../verification/verification.module';
+import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [jwtModuleRegister(), UsersModule, EmailModule],
-  providers: [AuthService, LocalStrategy],
+  imports: [jwtModuleRegister(), UsersModule, EmailModule, VerificationModule],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
   controllers: [AuthController],
 })

@@ -14,25 +14,36 @@ export class VerificationRepository {
   private requestedAtKey = (id: string) => `verification:${id}:requestedAt`;
   private isVerifiedKey = (id: string) => `verification:${id}:isVerified`;
 
-  async createVerificationCodeFor(userId: string) {
+  async createVerificationCodeFor(id: string) {
     const verificationCode = generateVerificationCode();
-    const key = this.codeKey(userId);
+    const key = this.codeKey(id);
     await this.redisService.redis.set(key, verificationCode);
     return verificationCode;
   }
 
-  async getVerificationCodeFor(userId: string) {
-    const key = this.codeKey(userId);
+  async getVerificationCodeFor(id: string) {
+    const key = this.codeKey(id);
     return this.redisService.redis.get(key);
   }
 
-  async saveRequestedAtFor(userId: string) {
-    await this.redisService.redis.set(this.requestedAtKey(userId), Date.now());
+  async setRequestedAtFor(id: string) {
+    await this.redisService.redis.set(this.requestedAtKey(id), Date.now());
   }
 
-  async getRequestedAtFor(userId: string) {
-    const key = this.requestedAtKey(userId);
-    const value = await this.redisService.redis.get(key);
-    return value !== null ? parseInt(value) : value;
+  async getRequestedAtFor(id: string) {
+    const key = this.requestedAtKey(id);
+    const val = await this.redisService.redis.get(key);
+    return val !== null ? parseInt(val) : val;
+  }
+
+  async setIsVerifiedFor(id: string, isVerified: boolean) {
+    const key = this.isVerifiedKey(id);
+    await this.redisService.redis.set(key, `${isVerified}`);
+  }
+
+  async getIsVerifiedFor(id: string) {
+    const key = this.isVerifiedKey(id);
+    const val = await this.redisService.redis.get(key);
+    return val !== null ? val === 'true' : val;
   }
 }
