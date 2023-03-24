@@ -11,16 +11,24 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     super();
   }
 
-  canActivate(context: ExecutionContext) {
-    const targets = [context.getHandler(), context.getClass()];
+  private async optionalCanActivate(context: ExecutionContext) {
+    try {
+      await super.canActivate(context);
+    } catch {
+      // no-op
+    }
+  }
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const targets = [context.getClass(), context.getHandler()];
     const options = this.reflector
       .getAllAndOverride<PublicOptions | undefined>(PublicOptionsKey, targets);
 
     if (options !== undefined) {
-      if (options.optionalAuth) super.canActivate(context);
+      if (options.optionalAuth) await this.optionalCanActivate(context);
       return true;
     } else {
-      return super.canActivate(context);
+      return super.canActivate(context) as Promise<boolean>;
     }
   }
 }
