@@ -6,7 +6,7 @@ import { Config } from '../config';
 import { VerificationService } from '../verification/verification.service';
 import { Request } from 'express';
 
-export type UserJwtPayload = { userId: string, isVerified: boolean }
+export type UserJwtPayload = { id: string, isVerified: boolean }
 export type AuthRequest = Request & { user: UserJwtPayload }
 
 @Injectable()
@@ -27,6 +27,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: { sub: string }): Promise<UserJwtPayload> {
     const userId = payload.sub;
     const isVerified = await this.verificationService.isUserVerified(userId);
-    return { userId, isVerified };
+    return { id: userId, isVerified };
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -32,11 +32,12 @@ export class AuthController {
 
   @Post('/verify-email')
   async verifyEmail(@Req() req: AuthRequest, @Body() verifyEmailDto: VerifyEmailDto) {
-    return this.verificationService.verifyUserEmail(req.user.userId, verifyEmailDto.verificationCode);
+    return this.verificationService.verifyUserEmail(req.user.id, verifyEmailDto.verificationCode);
   }
 
+  @HttpCode(204)
   @Post('/resend-email')
-  async resendEmail() {
-    throw new Error('Not yet implemented');
+  async resendEmail(@Req() req: AuthRequest) {
+    await this.verificationService.sendVerificationEmail({ id: req.user.id });
   }
 }
