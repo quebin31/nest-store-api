@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Patch, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthRequest, OptionalAuthRequest } from '../auth/jwt.strategy';
 import { Public } from '../../decorators/public';
@@ -16,6 +16,7 @@ export class UsersController {
     return this.usersService.findById(id, isOwner);
   }
 
+  @HttpCode(200)
   @Patch('/')
   async updateUser(@Req() req: AuthRequest, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateUser(req.user.id, updateUserDto);

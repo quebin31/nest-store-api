@@ -18,6 +18,7 @@ export class AuthController {
   }
 
   @Public()
+  @HttpCode(201)
   @Post('/sign-up')
   async signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.registerUser(signUpDto);
@@ -25,11 +26,13 @@ export class AuthController {
 
   @Public()
   @UseGuards(LocalAuthGuard)
+  @HttpCode(200)
   @Post('/sign-in')
   async signIn(@Req() req: Request) {
     return this.authService.loginUser(req.user as User);
   }
 
+  @HttpCode(200)
   @Post('/verify-email')
   async verifyEmail(@Req() req: AuthRequest, @Body() verifyEmailDto: VerifyEmailDto) {
     return this.verificationService.verifyUserEmail(req.user.id, verifyEmailDto.verificationCode);
