@@ -1,13 +1,7 @@
 Category:
-  type: object
-  properties:
-    name:
-      description: Unique category name, not meant to be used as display name
-      type: string
-      pattern: '^[a-z][a-z_]+$'
-    displayName:
-      description: Display name
-      type: string
+  description: Unique category name, not meant to be used as display name
+  type: string
+  pattern: '^[a-z][a-z_]+$'
 
 ProductCategoriesResBody:
   type: object
@@ -119,6 +113,18 @@ ProductBase:
       description: Product's id
       type: string
       format: uuid
+    createdById:
+      description: The user that created this product
+      type: string
+      format: uuid
+    createdAt:
+      description: When the product was created
+      type: string
+      format: date-time
+    updatedAt:
+      description: When the product was last modified
+      type: string
+      format: date-time
     name:
       type: string
     description:
