@@ -1,7 +1,7 @@
-import { Allow } from 'class-validator';
+import { IsDefined } from 'class-validator';
 
 export class VerifyEmailDto {
 
-  @Allow()
+  @IsDefined()
   verificationCode!: string;
 }
