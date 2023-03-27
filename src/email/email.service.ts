@@ -10,12 +10,12 @@ export class EmailService {
     sendGridClient.setApiKey(apiKey);
   }
 
-  async sendVerificationCode(email: string, code: string) {
+  async sendVerificationCode(email: string, header: string, code: string) {
     return sendGridClient.send({
       from: 'kevindelcastillo@ravn.co',
       to: email,
       templateId: 'd-5863036bba634ea882ea270efb033889',
-      dynamicTemplateData: { verificationCode: code },
+      dynamicTemplateData: { header: header, verificationCode: code },
     });
   }
 }

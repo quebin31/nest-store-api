@@ -2,16 +2,17 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { VerificationRepository } from './verification.repository';
 import { EmailService } from '../email/email.service';
 import { TooManyRequestsException } from '../errors';
-import { UsersRepository } from '../users/users.repository';
 import { pick } from '../utils/types';
 
-export type SendVerificationOptions = { id: string, email?: string }
+export type SendVerificationOptions = {
+  user: { id: string, email?: string },
+  hasChangedEmail?: boolean,
+}
 
 @Injectable()
 export class VerificationService {
   constructor(
     private verificationRepository: VerificationRepository,
-    private usersRepository: UsersRepository,
     private emailService: EmailService,
   ) {
   }
@@ -20,7 +21,7 @@ export class VerificationService {
     let isVerified = await this.verificationRepository.getIsVerifiedFor(id);
     if (isVerified !== null) return isVerified;
 
-    const user = await this.usersRepository.findById(id);
+    const user = await this.verificationRepository.findUserById(id);
     if (!user) {
       throw new NotFoundException('User does not exist');
     }
@@ -31,7 +32,13 @@ export class VerificationService {
   }
 
   async sendVerificationEmail(options: SendVerificationOptions) {
-    const { id, email: maybeEmail } = options;
+    const { id, email: maybeEmail } = options.user;
+
+    if (options.hasChangedEmail === true) {
+      await this.verificationRepository.delRequestedAtFor(id);
+      await this.verificationRepository.setIsVerifiedFor(id, false);
+    }
+
     if (await this.isUserVerified(id)) {
       throw new BadRequestException('User is already verified');
     }
@@ -40,7 +47,7 @@ export class VerificationService {
     if (maybeEmail !== undefined) {
       resolvedEmail = maybeEmail;
     } else {
-      const user = await this.usersRepository.findById(id);
+      const user = await this.verificationRepository.findUserById(id);
       if (!user) {
         throw new NotFoundException(`Couldn't find user to send email to`);
       }
@@ -54,7 +61,11 @@ export class VerificationService {
     }
 
     const code = await this.verificationRepository.createVerificationCodeFor(id);
-    await this.emailService.sendVerificationCode(resolvedEmail, code);
+    const header = options.hasChangedEmail === true
+      ? `You've changed your email address`
+      : 'Thank you for registering!';
+
+    await this.emailService.sendVerificationCode(resolvedEmail, header, code);
   }
 
   async verifyUserEmail(id: string, code: string) {

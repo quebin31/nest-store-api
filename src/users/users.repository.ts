@@ -20,4 +20,8 @@ export class UsersRepository {
   async findById(id: string) {
     return this.prismaService.user.findUnique({ where: { id } });
   }
+
+  async updateUser(id: string, data: Partial<User>) {
+    return this.prismaService.user.update({ where: { id }, data });
+  }
 }

@@ -38,6 +38,6 @@ export class AuthController {
   @HttpCode(204)
   @Post('/resend-email')
   async resendEmail(@Req() req: AuthRequest) {
-    await this.verificationService.sendVerificationEmail({ id: req.user.id });
+    await this.verificationService.sendVerificationEmail({ user: req.user });
   }
 }

@@ -19,6 +19,10 @@ export class VerificationRepository {
   private isVerifiedKey = (id: string) => `verification:${id}:isVerified`;
 
 
+  async findUserById(id: string) {
+    return this.prismaService.user.findUnique({ where: { id } });
+  }
+
   async createVerificationCodeFor(id: string) {
     const verificationCode = generateVerificationCode();
     const key = this.codeKey(id);
@@ -39,10 +43,18 @@ export class VerificationRepository {
     return val !== null ? parseInt(val) : val;
   }
 
-  async setIsVerifiedFor(id: string, isVerified: boolean) {
+  async delRequestedAtFor(id: string) {
+    await this.redisService.redis.del(this.requestedAtKey(id));
+  }
+
+  async setIsVerifiedFor(id: string, isVerified: boolean | null) {
     const key = this.isVerifiedKey(id);
-    const options = { EX: 24 * 60 * 60 * 1000 };
-    await this.redisService.redis.set(key, `${isVerified}`, options);
+    if (isVerified === null) {
+      await this.redisService.redis.del(this.isVerifiedKey(id));
+    } else {
+      const options = { EX: 24 * 60 * 60 * 1000 };
+      await this.redisService.redis.set(key, `${isVerified}`, options);
+    }
   }
 
   async getIsVerifiedFor(id: string) {
@@ -58,7 +70,7 @@ export class VerificationRepository {
     });
 
     await this.redisService.redis.del(this.codeKey(id));
-    await this.redisService.redis.del(this.requestedAtKey(id));
+    await this.delRequestedAtFor(id);
     await this.setIsVerifiedFor(id, isVerified);
 
     return user;
