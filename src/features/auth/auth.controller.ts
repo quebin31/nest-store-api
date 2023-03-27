@@ -4,7 +4,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { User } from '@prisma/client';
 import { Request } from 'express';
-import { Public } from '../decorators/public';
+import { Public } from '../../decorators/public';
 import { AuthRequest } from './jwt.strategy';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { VerificationService } from '../verification/verification.service';

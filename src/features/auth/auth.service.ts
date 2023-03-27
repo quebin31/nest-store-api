@@ -5,7 +5,7 @@ import { User } from '@prisma/client';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { SendVerificationEmailEvent } from '../events';
+import { SendVerificationEmailEvent } from '../../events';
 
 @Injectable()
 export class AuthService {

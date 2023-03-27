@@ -1,6 +1,6 @@
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Config } from '../config';
+import { Config } from '../../config';
 
 export const jwtModuleRegister = () => JwtModule.registerAsync({
   imports: [ConfigModule],

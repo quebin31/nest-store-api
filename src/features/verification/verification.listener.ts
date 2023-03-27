@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
-import { SendVerificationEmailEvent, UserUpdatedEmailEvent } from '../events';
+import { SendVerificationEmailEvent, UserUpdatedEmailEvent } from '../../events';
 import { VerificationService } from './verification.service';
 
 export type SendToUser = { id: string, email: string }

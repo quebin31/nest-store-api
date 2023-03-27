@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthRequest, OptionalAuthRequest } from '../auth/jwt.strategy';
-import { Public } from '../decorators/public';
+import { Public } from '../../decorators/public';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller({ path: '/users', version: '1' })
