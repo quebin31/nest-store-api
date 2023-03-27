@@ -13,6 +13,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -57,5 +58,13 @@ export class ProductsController {
     @Param('id') productId: string,
   ) {
     return this.productsService.updateProduct(productId, req.user.id, data);
+  }
+
+  @Roles(Role.manager)
+  @UseGuards(VerifiedGuard, RolesGuard)
+  @HttpCode(200)
+  @Delete('/:id')
+  async deleteProduct(@Req() req: AuthRequest, @Param('id') productId: string) {
+    await this.productsService.deleteProduct(productId, req.user.id);
   }
 }

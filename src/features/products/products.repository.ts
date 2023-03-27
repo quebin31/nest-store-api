@@ -75,4 +75,21 @@ export class ProductsRepository {
       include: { images: true },
     });
   }
+
+  async deleteProduct(id: string, ownerId: string) {
+    const { products } = await this.prismaService.user.update({
+      where: { id: ownerId },
+      data: {
+        products: {
+          update: {
+            where: { id },
+            data: { state: ProductState.deleted },
+          },
+        },
+      },
+      include: { products: true },
+    });
+
+    return products.at(0) ?? null;
+  }
 }

@@ -71,4 +71,11 @@ export class ProductsService {
 
     return this.createProductResponse(updated);
   }
+
+  async deleteProduct(id: string, ownerId: string) {
+    const product = await this.productsRepository.deleteProduct(id, ownerId);
+    if (!product) {
+      throw new NotFoundException(`No product found with id ${id}`);
+    }
+  }
 }
