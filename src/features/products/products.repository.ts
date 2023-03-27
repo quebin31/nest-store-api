@@ -2,7 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductImage, ProductState } from '@prisma/client';
+import { UpdateProductDto } from './dto/update-product.dto';
 import omit from 'lodash.omit';
+
+export type UpdateProduct = Omit<UpdateProductDto, 'availableStockDelta'> & {
+  availableStock: number
+}
 
 @Injectable()
 export class ProductsRepository {
@@ -42,7 +47,32 @@ export class ProductsRepository {
   async findById(id: string) {
     return this.prismaService.product.findUnique({
       where: { id },
-      include: { images: true, category: true },
+      include: { images: true },
+    });
+  }
+
+  async findWithOwner(id: string, ownerId: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { id: ownerId },
+      include: { products: { where: { id }, include: { images: true } } },
+    });
+
+    return !user ? null : user.products.at(0) ?? null;
+  }
+
+  async updateProduct(id: string, data: UpdateProduct) {
+    const category = data.categoryName === undefined
+      ? undefined
+      : { connect: { name: data.categoryName } };
+
+    return this.prismaService.product.update({
+      where: { id },
+      data: {
+        ...omit(data, ['active', 'categoryName']),
+        category,
+        state: data.active ? ProductState.active : ProductState.inactive,
+      },
+      include: { images: true },
     });
   }
 }

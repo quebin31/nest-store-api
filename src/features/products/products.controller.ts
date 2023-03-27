@@ -9,11 +9,14 @@ import { VerifiedGuard } from '../verification/verified.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../../decorators/roles';
 import { Role } from '@prisma/client';
+import { UpdateProductDto } from './dto/update-product.dto';
 import {
   Body,
   Controller,
   Get,
   HttpCode,
+  Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -42,5 +45,17 @@ export class ProductsController {
     @ImageFiles() images: Array<MulterFile>,
   ) {
     return this.productsService.createProduct(req.user.id, form.product, images);
+  }
+
+  @Roles(Role.manager)
+  @UseGuards(VerifiedGuard, RolesGuard)
+  @HttpCode(200)
+  @Patch('/:id')
+  async updateProduct(
+    @Body() data: UpdateProductDto,
+    @Req() req: AuthRequest,
+    @Param('id') productId: string,
+  ) {
+    return this.productsService.updateProduct(productId, req.user.id, data);
   }
 }
