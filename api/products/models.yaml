@@ -136,7 +136,7 @@ ProductBase:
     active:
       description: Whether or not the product is active.
       type: boolean
-    category:
+    categoryName:
       type: object
       allOf:
         - $ref: '#/Category'
