@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { omit } from '../../utils/types';
 import { ProductImage, ProductState } from '@prisma/client';
+import omit from 'lodash.omit';
 
 @Injectable()
 export class ProductsRepository {

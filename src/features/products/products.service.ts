@@ -3,7 +3,7 @@ import { ProductsRepository } from './products.repository';
 import { CreateProductDto } from './dto/create-product.dto';
 import { MulterFile } from '../../utils/multer';
 import { Category, Product, ProductImage, ProductState } from '@prisma/client';
-import { omit } from '../../utils/types';
+import omit from 'lodash.omit';
 
 type FullProduct = Product & { images: ProductImage[], category: Category }
 
