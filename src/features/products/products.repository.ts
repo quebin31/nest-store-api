@@ -9,6 +9,15 @@ export type UpdateProduct = Omit<UpdateProductDto, 'availableStockDelta'> & {
   availableStock: number
 }
 
+export type GetProducts = {
+  sort: 'desc' | 'asc',
+  skip: number,
+  take: number,
+  category?: string,
+  cursor?: Date,
+  states: Exclude<ProductState, 'deleted'>[]
+}
+
 @Injectable()
 export class ProductsRepository {
   constructor(private prismaService: PrismaService) {
@@ -58,6 +67,26 @@ export class ProductsRepository {
     });
 
     return !user ? null : user.products.at(0) ?? null;
+  }
+
+  async findProducts(options: GetProducts) {
+    const cursor = options.cursor === undefined
+      ? undefined
+      : { createdAt: options.cursor };
+
+    return this.prismaService.product.findMany({
+      where: {
+        categoryName: options.category,
+        state: { not: ProductState.deleted, in: options.states },
+      },
+      orderBy: {
+        createdAt: options.sort,
+      },
+      skip: options.skip,
+      take: options.take,
+      cursor,
+      include: { images: true },
+    });
   }
 
   async updateProduct(id: string, data: UpdateProduct) {

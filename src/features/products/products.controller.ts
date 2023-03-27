@@ -10,6 +10,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../../decorators/roles';
 import { Role } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { GetProductsDto } from './dto/get-products.dto';
 import {
   Body,
   Controller,
@@ -19,6 +20,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
   UseInterceptors,
@@ -46,6 +48,18 @@ export class ProductsController {
     @ImageFiles() images: Array<MulterFile>,
   ) {
     return this.productsService.createProduct(req.user.id, form.product, images);
+  }
+
+  @Public()
+  @Get('/:id')
+  async getProduct(@Param('id') productId: string) {
+    return this.productsService.getProduct(productId);
+  }
+
+  @Public()
+  @Get('/')
+  async getProducts(@Query() getProductsDto: GetProductsDto) {
+    return this.productsService.getProducts(getProductsDto);
   }
 
   @Roles(Role.manager)

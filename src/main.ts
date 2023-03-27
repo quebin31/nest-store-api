@@ -10,7 +10,11 @@ async function bootstrap() {
 
   // Global configuration
   app.enableVersioning({ type: VersioningType.URI });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    transformOptions: { enableImplicitConversion: true },
+  }));
 
   // Prisma shutdown hooks
   const prismaService = await app.get(PrismaService);
