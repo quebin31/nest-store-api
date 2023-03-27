@@ -6,6 +6,7 @@ import { RedisModule } from './redis/redis.module';
 import { JwtAuthGuard } from './features/auth/jwt-auth.guard';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersModule } from './features/users/users.module';
+import { ProductsModule } from './features/products/products.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UsersModule } from './features/users/users.module';
     RedisModule,
     AuthModule,
     UsersModule,
+    ProductsModule,
   ],
   providers: [JwtAuthGuard.appProvider],
 })
