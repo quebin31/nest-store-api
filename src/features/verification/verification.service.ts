@@ -79,7 +79,7 @@ export class VerificationService {
     }
 
     const user = await this.verificationRepository.updateUser(id, { isVerified: true })
-      .catch((_) => {
+      .catch(_ => {
         throw new NotFoundException(`User to verify doesn't exist`);
       });
 

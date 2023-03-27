@@ -21,4 +21,4 @@ async function bootstrap() {
   await app.listen(parseInt(port));
 }
 
-bootstrap().catch((e) => console.log(`Failed to bootstrap server: ${e}`));
+bootstrap().catch(e => console.log(`Failed to bootstrap server: ${e}`));

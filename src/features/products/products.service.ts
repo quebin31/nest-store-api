@@ -31,7 +31,7 @@ export class ProductsService {
     }
 
     const product = await this.productsRepository.createProduct(userId, data)
-      .catch((_) => {
+      .catch(_ => {
         throw new BadRequestException('Invalid manager or category');
       });
 
