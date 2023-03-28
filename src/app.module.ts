@@ -8,6 +8,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersModule } from './features/users/users.module';
 import { ProductsModule } from './features/products/products.module';
 import { FavoritesModule } from './features/favorites/favorites.module';
+import { CartItemsModule } from './features/cart-items/cart-items.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { FavoritesModule } from './features/favorites/favorites.module';
     UsersModule,
     ProductsModule,
     FavoritesModule,
+    CartItemsModule,
   ],
   providers: [JwtAuthGuard.appProvider],
 })
