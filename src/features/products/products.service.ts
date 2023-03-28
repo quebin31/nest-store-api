@@ -14,7 +14,7 @@ export class ProductsService {
   constructor(private productsRepository: ProductsRepository) {
   }
 
-  private createProductResponse(product: FullProduct) {
+  static createProductResponse(product: FullProduct) {
     return {
       ...omit(product, ['images', 'state']),
       active: product.state === ProductState.active,
@@ -44,7 +44,7 @@ export class ProductsService {
       throw new NotFoundException('Product not found');
     }
 
-    return this.createProductResponse(fullProduct);
+    return ProductsService.createProductResponse(fullProduct);
   }
 
   async getProduct(id: string) {
@@ -53,7 +53,7 @@ export class ProductsService {
       throw new NotFoundException(`No product found with id ${id}`);
     }
 
-    return this.createProductResponse(product);
+    return ProductsService.createProductResponse(product);
   }
 
   async getProducts(getProductsDto: GetProductsDto) {
@@ -75,7 +75,7 @@ export class ProductsService {
 
     const products = await this.productsRepository.findProducts(options);
     const last = products.at(products.length - 1);
-    const mapped = products.map(product => this.createProductResponse(product));
+    const mapped = products.map(ProductsService.createProductResponse);
 
     return { products: mapped, length: mapped.length, cursor: last?.createdAt ?? null };
   }
@@ -103,7 +103,7 @@ export class ProductsService {
         throw new NotFoundException('No product was found or category is invalid');
       });
 
-    return this.createProductResponse(updated);
+    return ProductsService.createProductResponse(updated);
   }
 
   async deleteProduct(id: string, ownerId: string) {

@@ -14,7 +14,7 @@ export class UsersService {
   ) {
   }
 
-  private createUserResponse(user: User, isOwner: boolean) {
+  static createUserResponse(user: User, isOwner: boolean) {
     return {
       ...pick(user, ['name', 'role', 'verifiedAt']),
       email: isOwner ? user.email : null,
@@ -28,7 +28,7 @@ export class UsersService {
       throw new NotFoundException(`Couldn't find user with id ${id}`);
     }
 
-    return this.createUserResponse(user, isOwner);
+    return UsersService.createUserResponse(user, isOwner);
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
@@ -47,6 +47,6 @@ export class UsersService {
       this.eventEmitter.emit(UserUpdatedEmailEvent, updated);
     }
 
-    return this.createUserResponse(updated, true);
+    return UsersService.createUserResponse(updated, true);
   }
 }
