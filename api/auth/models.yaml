@@ -20,6 +20,11 @@ SignUpReqBody:
           type: string
           minLength: 2
           maxLength: 64
+        role:
+          description: |
+            Optionally create a new manager user, only available for admins (must sent a valid JWT)
+          type: string
+          enum: [ manager ]
       required: [ name ]
 
 SignInReqBody:

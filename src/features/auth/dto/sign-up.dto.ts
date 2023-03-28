@@ -1,4 +1,12 @@
-import { IsDefined, IsEmail, IsStrongPassword, Length, MaxLength } from 'class-validator';
+import {
+  IsDefined,
+  IsEmail, IsIn,
+  IsOptional,
+  IsStrongPassword,
+  Length,
+  MaxLength,
+} from 'class-validator';
+import { Role } from '@prisma/client';
 
 export class SignUpDto {
 
@@ -14,4 +22,8 @@ export class SignUpDto {
   @IsDefined()
   @Length(2, 64)
   name!: string;
+
+  @IsOptional()
+  @IsIn([Role.manager])
+  role?: Extract<Role, 'manager'>;
 }

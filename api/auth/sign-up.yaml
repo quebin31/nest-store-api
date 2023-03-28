@@ -1,9 +1,11 @@
 post:
   summary: Sign up
+  description: |
+    Sign up for a new account, public endpoint by default, however if body contains a `role` field
+    (to create a manager) a valid JWT belonging to an *admin* must also be provided.
   tags:
     - Auth
   operationId: signUp
-  security: [ ]
   requestBody:
     description: New user information
     required: true

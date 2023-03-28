@@ -2,7 +2,12 @@ import { SignUpDto } from './dto/sign-up.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersRepository } from '../users/users.repository';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SendVerificationEmailEvent } from '../../events';
@@ -22,8 +27,12 @@ export class AuthService {
     return { id: user.id, accessToken };
   }
 
-  async registerUser(signUpDto: SignUpDto) {
+  async registerUser(signUpDto: SignUpDto, adminCall: boolean) {
     const { password, ...rest } = signUpDto;
+    if (rest.role !== undefined && !adminCall) {
+      throw new ForbiddenException('Only admins can sign up new managers');
+    }
+
     const saltedPassword = await bcrypt.hash(password, 10);
     const user = await this.usersRepository
       .createUser({ password: saltedPassword, ...rest })
