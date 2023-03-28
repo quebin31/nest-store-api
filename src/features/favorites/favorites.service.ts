@@ -19,6 +19,10 @@ export class FavoritesService {
   }
 
   async addToFavorites(userId: string, productId: string) {
+    if (await this.favoritesRepository.isInvalidProduct(productId)) {
+      throw new NotFoundException(`Couldn't find product`);
+    }
+
     const favorite = await this.favoritesRepository.addToFavorites(userId, productId)
       .catch(_ => {
         throw new NotFoundException(`Couldn't find user or product`);

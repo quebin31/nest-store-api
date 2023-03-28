@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
+import { ProductState } from '@prisma/client';
 
 export type GetFavorites = {
   sort: 'desc' | 'asc',
@@ -9,6 +10,14 @@ export type GetFavorites = {
 @Injectable()
 export class FavoritesRepository {
   constructor(private prismaService: PrismaService) {
+  }
+
+  async isInvalidProduct(productId: string) {
+    const product = await this.prismaService.product.findUnique({
+      where: { id: productId },
+    });
+
+    return !product || product.state === ProductState.deleted;
   }
 
   async addToFavorites(userId: string, productId: string) {
@@ -25,7 +34,12 @@ export class FavoritesRepository {
 
   async getFavorites(options: GetFavorites) {
     return this.prismaService.productUserFavorite.findMany({
-      where: { userId: options.user },
+      where: {
+        userId: options.user,
+        product: {
+          state: { not: ProductState.deleted },
+        },
+      },
       orderBy: { createdAt: options.sort },
       include: {
         product: { include: { images: true } },
