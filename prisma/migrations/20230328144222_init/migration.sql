@@ -76,7 +76,7 @@ CREATE TABLE "product_user_favorites" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "product_user_favorites_pkey" PRIMARY KEY ("user_id")
+    CONSTRAINT "product_user_favorites_pkey" PRIMARY KEY ("user_id","product_id")
 );
 
 -- CreateTable
