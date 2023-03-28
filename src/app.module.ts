@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './features/auth/jwt-auth.guard';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersModule } from './features/users/users.module';
 import { ProductsModule } from './features/products/products.module';
+import { FavoritesModule } from './features/favorites/favorites.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ProductsModule } from './features/products/products.module';
     AuthModule,
     UsersModule,
     ProductsModule,
+    FavoritesModule,
   ],
   providers: [JwtAuthGuard.appProvider],
 })
