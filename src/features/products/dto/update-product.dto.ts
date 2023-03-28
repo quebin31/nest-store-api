@@ -1,4 +1,4 @@
-import { IsDefined, IsInt, IsNumber, IsOptional, Length, Matches, Min } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, Length, Matches, Min } from 'class-validator';
 
 export class UpdateProductDto {
 
@@ -31,7 +31,7 @@ export class UpdateProductDto {
   @IsOptional()
   active?: boolean;
 
-  @IsDefined()
+  @IsOptional()
   @IsInt()
   availableStockDelta?: number;
 }
