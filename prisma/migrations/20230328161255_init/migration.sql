@@ -23,7 +23,7 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "categories" (
     "name" TEXT NOT NULL,
-    "display_name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("name")
 );

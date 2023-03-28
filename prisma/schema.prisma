@@ -39,7 +39,7 @@ model User {
 
 model Category {
     name        String    @id
-    displayName String    @map("display_name")
+    description String
     products    Product[]
 
     @@map("categories")
