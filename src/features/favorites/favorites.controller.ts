@@ -10,13 +10,13 @@ export class FavoritesController {
   }
 
   @Post('/')
-  async addToFavorites(@Body() addToFavoriteDto: AddToFavoritesDto, @Req() req: AuthRequest) {
-    return this.favoritesService.addToFavorites(req.user.id, addToFavoriteDto.productId);
+  async addToFavorites(@Body() data: AddToFavoritesDto, @Req() req: AuthRequest) {
+    return this.favoritesService.addToFavorites(req.user.id, data.productId);
   }
 
   @Get('/')
-  async getFavorites(@Query() getFavoritesDto: GetFavoritesDto, @Req() req: AuthRequest) {
-    return this.favoritesService.getFavorites(req.user.id, getFavoritesDto);
+  async getFavorites(@Query() query: GetFavoritesDto, @Req() req: AuthRequest) {
+    return this.favoritesService.getFavorites(req.user.id, query);
   }
 
   @Delete('/:id')

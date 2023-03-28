@@ -18,7 +18,7 @@ export class UsersController {
 
   @HttpCode(200)
   @Patch('/')
-  async updateUser(@Req() req: AuthRequest, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.updateUser(req.user.id, updateUserDto);
+  async updateUser(@Req() req: AuthRequest, @Body() data: UpdateUserDto) {
+    return this.usersService.updateUser(req.user.id, data);
   }
 }

@@ -58,8 +58,8 @@ export class ProductsController {
 
   @Public()
   @Get('/')
-  async getProducts(@Query() getProductsDto: GetProductsDto) {
-    return this.productsService.getProducts(getProductsDto);
+  async getProducts(@Query() query: GetProductsDto) {
+    return this.productsService.getProducts(query);
   }
 
   @Roles(Role.manager)
