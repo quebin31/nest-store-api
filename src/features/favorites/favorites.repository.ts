@@ -12,14 +12,6 @@ export class FavoritesRepository {
   constructor(private prismaService: PrismaService) {
   }
 
-  async isInvalidProduct(productId: string) {
-    const product = await this.prismaService.product.findUnique({
-      where: { id: productId },
-    });
-
-    return !product || product.state === ProductState.deleted;
-  }
-
   async addToFavorites(userId: string, productId: string) {
     return this.prismaService.productUserFavorite.create({
       data: {

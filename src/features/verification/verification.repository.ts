@@ -19,10 +19,6 @@ export class VerificationRepository {
   private isVerifiedKey = (id: string) => `verification:${id}:isVerified`;
 
 
-  async findUserById(id: string) {
-    return this.prismaService.user.findUnique({ where: { id } });
-  }
-
   async createVerificationCodeFor(id: string) {
     const verificationCode = generateVerificationCode();
     const key = this.codeKey(id);

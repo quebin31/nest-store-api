@@ -54,10 +54,12 @@ export class ProductsRepository {
   }
 
   async findById(id: string) {
-    return this.prismaService.product.findUnique({
+    const product = await this.prismaService.product.findUnique({
       where: { id },
       include: { images: true },
     });
+
+    return !product || product.state === ProductState.deleted ? null : product;
   }
 
   async findWithOwner(id: string, ownerId: string) {

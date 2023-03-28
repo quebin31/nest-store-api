@@ -3,6 +3,7 @@ import { VerificationRepository } from './verification.repository';
 import { EmailService } from '../../email/email.service';
 import { TooManyRequestsException } from '../../errors';
 import pick from 'lodash.pick';
+import { UsersRepository } from '../users/users.repository';
 
 export type SendVerificationOptions = {
   user: { id: string, email?: string },
@@ -14,6 +15,7 @@ export class VerificationService {
   constructor(
     private verificationRepository: VerificationRepository,
     private emailService: EmailService,
+    private usersRepository: UsersRepository,
   ) {
   }
 
@@ -21,7 +23,7 @@ export class VerificationService {
     let isVerified = await this.verificationRepository.getIsVerifiedFor(id);
     if (isVerified !== null) return isVerified;
 
-    const user = await this.verificationRepository.findUserById(id);
+    const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException('User does not exist');
     }
@@ -47,7 +49,7 @@ export class VerificationService {
     if (maybeEmail !== undefined) {
       resolvedEmail = maybeEmail;
     } else {
-      const user = await this.verificationRepository.findUserById(id);
+      const user = await this.usersRepository.findById(id);
       if (!user) {
         throw new NotFoundException(`Couldn't find user to send email to`);
       }

@@ -6,12 +6,16 @@ import { FullProduct, ProductsService } from '../products/products.service';
 import pick from 'lodash.pick';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { ProductsRepository } from '../products/products.repository';
 
 export type FullCartItem = CartItem & { product: FullProduct }
 
 @Injectable()
 export class CartItemsService {
-  constructor(private cartItemsRepository: CartItemsRepository) {
+  constructor(
+    private cartItemsRepository: CartItemsRepository,
+    private productsRepository: ProductsRepository,
+  ) {
   }
 
   static createCartItemResponse(cartItem: FullCartItem) {
@@ -26,13 +30,14 @@ export class CartItemsService {
   }
 
   async addCartItem(userId: string, addCartItemDto: AddCartItemDto) {
-    const product = await this.cartItemsRepository.getValidProduct(addCartItemDto.productId);
+    const product = await this.productsRepository.findById(addCartItemDto.productId);
     if (!product) {
       throw new NotFoundException('Invalid product');
     }
 
     if (!this.isValidQuantity(addCartItemDto.quantity, product)) {
-      throw new BadRequestException(`Invalid quantity, not in [${product.minQuantity}..${product.maxQuantity}]`);
+      const message = `Invalid quantity, not in [${product.minQuantity}..${product.maxQuantity}]`;
+      throw new BadRequestException(message);
     }
 
     const cartItem = await this.cartItemsRepository.addCartItem(userId, addCartItemDto)
@@ -54,7 +59,7 @@ export class CartItemsService {
   }
 
   async updateCartItem(userId: string, productId: string, updateCartItemDto: UpdateCartItemDto) {
-    const product = await this.cartItemsRepository.getValidProduct(productId);
+    const product = await this.productsRepository.findById(productId);
     if (!product) {
       try {
         await this.deleteCartItem(userId, productId);

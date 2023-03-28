@@ -14,15 +14,6 @@ export class CartItemsRepository {
   constructor(private prismaService: PrismaService) {
   }
 
-  async getValidProduct(productId: string) {
-    const product = await this.prismaService.product.findUnique({
-      where: { id: productId },
-    });
-
-    const isInvalid = !product || product.state === ProductState.deleted;
-    return isInvalid ? null : product;
-  }
-
   async addCartItem(userId: string, addCartItemDto: AddCartItemDto) {
     return this.prismaService.cartItem.create({
       data: {

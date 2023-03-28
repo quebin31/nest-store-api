@@ -3,12 +3,16 @@ import { FavoritesRepository, GetFavorites } from './favorites.repository';
 import { ProductUserFavorite } from '@prisma/client';
 import { FullProduct, ProductsService } from '../products/products.service';
 import { GetFavoritesDto } from './dto/get-favorites.dto';
+import { ProductsRepository } from '../products/products.repository';
 
 export type FullFavorite = ProductUserFavorite & { product: FullProduct }
 
 @Injectable()
 export class FavoritesService {
-  constructor(private favoritesRepository: FavoritesRepository) {
+  constructor(
+    private favoritesRepository: FavoritesRepository,
+    private productsRepository: ProductsRepository,
+  ) {
   }
 
   static createFavoriteResponse(favorite: FullFavorite) {
@@ -19,7 +23,8 @@ export class FavoritesService {
   }
 
   async addToFavorites(userId: string, productId: string) {
-    if (await this.favoritesRepository.isInvalidProduct(productId)) {
+    const product = await this.productsRepository.findById(productId);
+    if (!product) {
       throw new NotFoundException(`Couldn't find product`);
     }
 

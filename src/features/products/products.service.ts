@@ -49,7 +49,7 @@ export class ProductsService {
 
   async getProduct(id: string) {
     const product = await this.productsRepository.findById(id);
-    if (!product || product.state === ProductState.deleted) {
+    if (!product) {
       throw new NotFoundException(`No product found with id ${id}`);
     }
 
@@ -82,7 +82,7 @@ export class ProductsService {
 
   async updateProduct(id: string, ownerId: string, data: UpdateProductDto) {
     const product = await this.productsRepository.findWithOwner(id, ownerId);
-    if (!product || product.state === ProductState.deleted) {
+    if (!product) {
       throw new NotFoundException(`No product found with id ${id}`);
     }
 
