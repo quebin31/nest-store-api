@@ -54,7 +54,7 @@ export class CartItemsService {
       user: userId,
     };
 
-    const cartItems = await this.cartItemsRepository.getCartItems(options);
+    const cartItems = await this.cartItemsRepository.findCartItems(options);
     return cartItems.map(CartItemsService.createCartItemResponse);
   }
 

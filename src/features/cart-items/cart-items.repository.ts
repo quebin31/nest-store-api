@@ -27,7 +27,7 @@ export class CartItemsRepository {
     });
   }
 
-  async getCartItems(options: GetCartItems) {
+  async findCartItems(options: GetCartItems) {
     return this.prismaService.cartItem.findMany({
       where: {
         userId: options.user,

@@ -42,7 +42,7 @@ export class FavoritesService {
       user: userId,
     };
 
-    const favorites = await this.favoritesRepository.getFavorites(options);
+    const favorites = await this.favoritesRepository.findFavorites(options);
     return favorites.map(FavoritesService.createFavoriteResponse);
   }
 

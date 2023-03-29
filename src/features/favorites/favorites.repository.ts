@@ -24,7 +24,7 @@ export class FavoritesRepository {
     });
   }
 
-  async getFavorites(options: GetFavorites) {
+  async findFavorites(options: GetFavorites) {
     return this.prismaService.productUserFavorite.findMany({
       where: {
         userId: options.user,
