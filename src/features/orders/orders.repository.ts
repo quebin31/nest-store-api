@@ -86,4 +86,13 @@ export class OrdersRepository {
       },
     });
   }
+
+  async findOrder(id: string, userId?: string) {
+    return this.prismaService.order.findFirst({
+      where: { id, userId },
+      include: {
+        items: { include: { product: true } },
+      },
+    });
+  }
 }

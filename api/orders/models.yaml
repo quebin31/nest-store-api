@@ -4,6 +4,10 @@ OrderProduct:
     description: Product's id
     type: string
     format: uuid
+  createdAt:
+    description: When the product was created
+    type: string
+    format: date-time
   name:
     type: string
   active:

@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GetOrders, OrdersRepository } from './orders.repository';
 import { Order, OrderItem, Product, ProductState, Role } from '@prisma/client';
 import pick from 'lodash.pick';
@@ -17,7 +22,7 @@ export class OrdersService {
 
   static createProductItem(product: Product) {
     return {
-      ...pick(product, ['id', 'name', 'thumbnailUrl', 'createdById']),
+      ...pick(product, ['id', 'createdAt', 'name', 'thumbnailUrl', 'createdById']),
       active: product.state === ProductState.active,
     };
   }
@@ -81,5 +86,20 @@ export class OrdersService {
     const mapped = orders.map(OrdersService.createOrderResponse);
 
     return { orders: mapped, length: mapped.length, cursor: last?.createdAt ?? null };
+  }
+
+  async getOrder(id: string, userId: string) {
+    const user = await this.usersRepository.findById(userId);
+    if (!user) {
+      throw new ForbiddenException(`Invalid user`);
+    }
+
+    const userFilter = user.role === Role.user ? userId : undefined;
+    const order = await this.ordersRepository.findOrder(id, userFilter);
+    if (!order) {
+      throw new NotFoundException(`No order found with id ${id}`);
+    }
+
+    return OrdersService.createOrderResponse(order);
   }
 }
