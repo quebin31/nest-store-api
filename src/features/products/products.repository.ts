@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductImage, ProductState } from '@prisma/client';
@@ -91,20 +91,35 @@ export class ProductsRepository {
     });
   }
 
-  async updateProduct(id: string, data: UpdateProduct) {
+  async updateProduct(id: string, data: UpdateProductDto) {
     const category = data.categoryName === undefined
       ? undefined
       : { connect: { name: data.categoryName } };
 
-    return this.prismaService.product.update({
-      where: { id },
-      data: {
-        ...omit(data, ['active', 'categoryName']),
-        category,
-        state: data.active ? ProductState.active : ProductState.inactive,
-      },
-      include: { images: true },
-    });
+    return this.prismaService.$transaction(async tx => {
+      const product = await tx.product.update({
+        where: { id },
+        data: {
+          ...omit(data, ['active', 'categoryName', 'availableStockDelta']),
+          category,
+          state: data.active ? ProductState.active : ProductState.inactive,
+          availableStock: {
+            increment: data.availableStockDelta,
+          }
+        },
+        include: { images: true },
+      });
+
+      if (product.minQuantity > product.maxQuantity) {
+        throw new BadRequestException('Incoherent minQuantity and/or maxQuantity');
+      }
+
+      if (product.availableStock < 0) {
+        throw new BadRequestException('Resultant available stock would be negative!');
+      }
+
+      return product;
+    })
   }
 
   async deleteProduct(id: string, ownerId: string) {

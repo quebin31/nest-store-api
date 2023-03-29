@@ -86,19 +86,7 @@ export class ProductsService {
       throw new NotFoundException(`No product found with id ${id}`);
     }
 
-    const minQuantity = data.minQuantity ?? product.minQuantity;
-    const maxQuantity = data.maxQuantity ?? product.maxQuantity;
-    if (minQuantity > maxQuantity) {
-      throw new BadRequestException('Incoherent minQuantity and/or maxQuantity');
-    }
-
-    const availableStock = product.availableStock + (data.availableStockDelta ?? 0);
-    if (availableStock < 0) {
-      throw new BadRequestException('Resultant available stock would be negative!');
-    }
-
-    const cleansedData = { ...omit(data, ['availableStockDelta']), availableStock };
-    const updated = await this.productsRepository.updateProduct(product.id, cleansedData)
+    const updated = await this.productsRepository.updateProduct(product.id, data)
       .catch(_ => {
         throw new NotFoundException('No product was found or category is invalid');
       });
