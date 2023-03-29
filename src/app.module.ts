@@ -9,6 +9,7 @@ import { UsersModule } from './features/users/users.module';
 import { ProductsModule } from './features/products/products.module';
 import { FavoritesModule } from './features/favorites/favorites.module';
 import { CartItemsModule } from './features/cart-items/cart-items.module';
+import { OrdersModule } from './features/orders/orders.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CartItemsModule } from './features/cart-items/cart-items.module';
     ProductsModule,
     FavoritesModule,
     CartItemsModule,
+    OrdersModule,
   ],
   providers: [JwtAuthGuard.appProvider],
 })
