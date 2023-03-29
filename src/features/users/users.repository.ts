@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { User } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 
 export type NewUser = Pick<User, 'email' | 'password' | 'name'>
 
@@ -23,5 +23,11 @@ export class UsersRepository {
 
   async updateUser(id: string, data: Partial<User>) {
     return this.prismaService.user.update({ where: { id }, data });
+  }
+
+  async findManager(id: string) {
+    return this.prismaService.user.findFirst({
+      where: { id, role: Role.manager },
+    });
   }
 }

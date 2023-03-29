@@ -39,17 +39,21 @@ export class OrdersRepository {
       await tx.cartItem.deleteMany({ where: { userId } });
 
       for (const item of cartItems) {
-        const newAvailableStock = item.product.availableStock - item.quantity;
-        if (newAvailableStock < 0) {
+        const product = await tx.product.update({
+          where: { id: item.productId },
+          data: {
+            availableStock: { decrement: item.quantity },
+          },
+        });
+
+        if (product.availableStock < 0) {
           throw new BadRequestException(`Product ${item.productId} out of stock`);
         }
 
-        await tx.product.update({
-          where: { id: item.productId },
-          data: {
-            availableStock: newAvailableStock,
-          },
-        });
+        if (item.quantity < product.minQuantity || item.quantity > product.maxQuantity) {
+          const message = `Item ${item.productId} quantity not in [${product.minQuantity}..${product.maxQuantity}]`;
+          throw new BadRequestException(message);
+        }
       }
 
       return tx.order.create({

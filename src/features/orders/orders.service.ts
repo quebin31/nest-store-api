@@ -64,22 +64,6 @@ export class OrdersService {
 
   async createOrder(userId: string) {
     const activeCartItems = await this.ordersRepository.getActiveCartItems(userId);
-    const invalidItems = activeCartItems.filter(item => {
-      const product = item.product;
-      return item.quantity < product.minQuantity
-        || item.quantity > product.maxQuantity
-        || item.quantity > product.availableStock;
-    });
-
-    if (invalidItems.length !== 0) {
-      throw new BadRequestException({
-        statusCode: 400,
-        message: 'Bad Request',
-        error: 'Invalid quantities or products out of stock',
-        invalidProductIds: invalidItems.map(it => it.productId),
-      });
-    }
-
     const order = await this.ordersRepository.createOrder(userId, activeCartItems);
     return OrdersService.createOrderResponse(order);
   }
@@ -89,8 +73,8 @@ export class OrdersService {
     if (getOrdersDto.user === 'self') {
       user = userId;
     } else {
-      const caller = await this.usersRepository.findById(userId);
-      if (!caller || caller.role !== Role.manager) {
+      const caller = await this.usersRepository.findManager(userId);
+      if (!caller) {
         throw new ForbiddenException(`Invalid manager user`);
       }
 
