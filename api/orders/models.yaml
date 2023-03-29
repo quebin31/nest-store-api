@@ -36,6 +36,31 @@ OrderItem:
       allOf:
         - $ref: '#/OrderProduct'
 
+OrderCancelReason:
+  type: object
+  properties:
+    createdAt:
+      type: string
+      format: date-time
+    updatedAt:
+      type: string
+      format: date-time
+    reason:
+      description: Optional specified cancel reason
+      type: string
+      nullable: true
+    canceledById:
+      description: User that canceled this order
+      type: string
+      format: uuid
+    code:
+      description: Code that specifies the type on cancellation
+      type: string
+      pattern: '^[a-z][a-z_]+$'
+    description:
+      description: General cancellation description
+      type: string
+
 OrderResBody:
   type: object
   properties:
@@ -64,6 +89,12 @@ OrderResBody:
       description: Who created this order.
       type: string
       format: uuid
+    cancelReason:
+      description: Cancel reason, available if state is `canceled`.
+      nullable: true
+      type: object
+      allOf:
+        - $ref: '#/OrderCancelReason'
     orderItems:
       type: array
       items:

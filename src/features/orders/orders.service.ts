@@ -5,12 +5,26 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { GetOrders, OrdersRepository } from './orders.repository';
-import { Order, OrderItem, Product, ProductState, Role } from '@prisma/client';
+import {
+  Order,
+  OrderCancelCode,
+  OrderCancelReason,
+  OrderItem,
+  Product,
+  ProductState,
+  Role,
+} from '@prisma/client';
 import pick from 'lodash.pick';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { UsersRepository } from '../users/users.repository';
+import omit from 'lodash.omit';
 
-export type FullOrder = Order & { items: (OrderItem & { product: Product })[] }
+export type FullCancelReason = OrderCancelReason & { code: OrderCancelCode }
+
+export type FullOrder = Order & {
+  items: (OrderItem & { product: Product })[],
+  cancelReason?: FullCancelReason | null,
+}
 
 @Injectable()
 export class OrdersService {
@@ -27,9 +41,20 @@ export class OrdersService {
     };
   }
 
+  static createCancelReasonResponse(cancelReason: FullCancelReason) {
+    return {
+      ...omit(cancelReason, ['id', 'codeId', 'orderId']),
+      code: cancelReason.code.code,
+      description: cancelReason.code.description,
+    };
+  }
+
   static createOrderResponse(order: FullOrder) {
     return {
       ...pick(order, ['id', 'createdAt', 'updatedAt', 'state', 'receivedAt', 'userId']),
+      cancelReason: order.cancelReason
+        ? OrdersService.createCancelReasonResponse(order.cancelReason)
+        : null,
       orderItems: order.items.map(item => ({
         ...pick(item, ['quantity', 'lockedPrice']),
         product: OrdersService.createProductItem(item.product),

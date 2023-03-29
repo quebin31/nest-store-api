@@ -83,6 +83,7 @@ export class OrdersRepository {
       cursor,
       include: {
         items: { include: { product: true } },
+        cancelReason: { include: { code: true } },
       },
     });
   }
@@ -92,6 +93,7 @@ export class OrdersRepository {
       where: { id, userId },
       include: {
         items: { include: { product: true } },
+        cancelReason: { include: { code: true } },
       },
     });
   }
