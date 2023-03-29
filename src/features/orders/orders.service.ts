@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { GetOrders, OrdersRepository } from './orders.repository';
 import {
   Order,
@@ -63,8 +58,7 @@ export class OrdersService {
   }
 
   async createOrder(userId: string) {
-    const activeCartItems = await this.ordersRepository.getActiveCartItems(userId);
-    const order = await this.ordersRepository.createOrder(userId, activeCartItems);
+    const order = await this.ordersRepository.createOrder(userId);
     return OrdersService.createOrderResponse(order);
   }
 

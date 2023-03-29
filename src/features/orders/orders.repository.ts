@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CartItem, OrderState, Product, ProductState } from '@prisma/client';
-
-export type CartItemProduct = CartItem & { product: Product }
+import { OrderState, ProductState } from '@prisma/client';
 
 export type GetOrders = {
   sort: 'desc' | 'asc',
@@ -18,7 +16,7 @@ export class OrdersRepository {
   constructor(private prismaService: PrismaService) {
   }
 
-  async getActiveCartItems(userId: string) {
+  private async getActiveCartItems(userId: string) {
     return this.prismaService.cartItem.findMany({
       where: {
         userId,
@@ -28,11 +26,14 @@ export class OrdersRepository {
     });
   }
 
-  async createOrder(userId: string, cartItems: CartItemProduct[]) {
-    const itemsData = cartItems.map(item => ({
+  async createOrder(userId: string) {
+    const cartItems = await this.getActiveCartItems(userId);
+    const createItemsData = cartItems.map(item => ({
       quantity: item.quantity,
       lockedPrice: item.product.price,
-      product: { connect: { id: item.productId } },
+      product: {
+        connect: { id: item.productId },
+      },
     }));
 
     return this.prismaService.$transaction(async tx => {
@@ -59,7 +60,7 @@ export class OrdersRepository {
       return tx.order.create({
         data: {
           state: OrderState.pending,
-          items: { create: itemsData },
+          items: { create: createItemsData },
           user: { connect: { id: userId } },
         },
         include: {
