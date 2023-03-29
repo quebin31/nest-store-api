@@ -2,7 +2,6 @@ import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/com
 import { GetOrders, OrdersRepository } from './orders.repository';
 import { Order, OrderItem, Product, ProductState, Role } from '@prisma/client';
 import pick from 'lodash.pick';
-import omit from 'lodash.omit';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { UsersRepository } from '../users/users.repository';
 
@@ -18,7 +17,7 @@ export class OrdersService {
 
   static createProductItem(product: Product) {
     return {
-      ...omit(product, ['state']),
+      ...pick(product, ['id', 'name', 'thumbnailUrl', 'createdById']),
       active: product.state === ProductState.active,
     };
   }

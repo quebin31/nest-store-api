@@ -1,3 +1,22 @@
+OrderProduct:
+  type: object
+  id:
+    description: Product's id
+    type: string
+    format: uuid
+  name:
+    type: string
+  active:
+    description: Whether or not the product is active.
+    type: boolean
+  thumbnailUrl:
+    type: string
+    format: url
+  createdById:
+    description: The user that created this product
+    type: string
+    format: uuid
+
 OrderItem:
   type: object
   properties:
@@ -11,7 +30,7 @@ OrderItem:
     product:
       type: object
       allOf:
-        - $ref: '../products/models.yaml#/ProductBase'
+        - $ref: '#/OrderProduct'
 
 OrderResBody:
   type: object
@@ -28,6 +47,19 @@ OrderResBody:
       description: Date of last modification
       type: string
       format: date-time
+    state:
+      description: Order's state
+      type: string
+      enum: [ pending, confirmed, received, canceled ]
+    receivedAt:
+      description: Date when order was received, if state is `received`
+      type: string
+      format: date-time
+      nullable: true
+    userId:
+      description: Who created this order.
+      type: string
+      format: uuid
     orderItems:
       type: array
       items:
