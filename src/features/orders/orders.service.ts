@@ -1,10 +1,16 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException, HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { GetOrders, OrdersRepository } from './orders.repository';
 import {
   Order,
   OrderCancelCode,
   OrderCancelReason,
   OrderItem,
+  OrderState,
   Product,
   ProductState,
   Role,
@@ -13,6 +19,7 @@ import pick from 'lodash.pick';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { UsersRepository } from '../users/users.repository';
 import omit from 'lodash.omit';
+import { CancelOrderDto, ConfirmOrderDto, UpdateOrderDto } from './dto/update-order.dto';
 
 export type FullCancelReason = OrderCancelReason & { code: OrderCancelCode }
 
@@ -58,7 +65,14 @@ export class OrdersService {
   }
 
   async createOrder(userId: string) {
-    const order = await this.ordersRepository.createOrder(userId);
+    const order = await this.ordersRepository.createOrder(userId)
+      .catch(e => {
+        if (e instanceof HttpException) {
+          throw e;
+        } else {
+          throw new BadRequestException('Invalid user or products');
+        }
+      });
     return OrdersService.createOrderResponse(order);
   }
 
@@ -104,5 +118,74 @@ export class OrdersService {
     }
 
     return OrdersService.createOrderResponse(order);
+  }
+
+  async updateOrder(id: string, userId: string, data: UpdateOrderDto) {
+    let order: FullOrder;
+    switch (data.state) {
+      case 'received':
+        order = await this.updateOrderAsReceived(id, userId);
+        break;
+      case 'confirmed':
+        order = await this.updateOrderAsConfirmed(id, userId, data);
+        break;
+      case 'canceled':
+        order = await this.updateOrderAsCanceled(id, userId, data);
+        break;
+    }
+
+    return OrdersService.createOrderResponse(order);
+  }
+
+  private async updateOrderAsReceived(id: string, userId: string) {
+    const user = await this.usersRepository.findManager(userId);
+    if (!user) {
+      throw new ForbiddenException('Only managers can mark an order as received');
+    }
+
+    const order = await this.ordersRepository.findOrder(id);
+    if (!order || order.state !== OrderState.confirmed) {
+      throw new BadRequestException('Only confirmed orders can be transitioned into the received state');
+    }
+
+    return this.ordersRepository.updateOrderAsReceived(id)
+      .catch(_ => {
+        throw new NotFoundException(`Invalid order with ${id}`);
+      });
+  }
+
+  private async updateOrderAsConfirmed(id: string, userId: string, data: ConfirmOrderDto) {
+    const user = await this.usersRepository.findManager(userId);
+    if (!user) {
+      throw new ForbiddenException('Only managers can mark an order as confirmed');
+    }
+
+    const order = await this.ordersRepository.findOrder(id);
+    if (!order || order.state === OrderState.received || order.state === OrderState.canceled) {
+      throw new BadRequestException('Only pending orders can be transitioned into the confirmed state');
+    }
+
+    const updates = data.products ?? [];
+    return this.ordersRepository.updateOrderAsConfirmed(id, updates)
+      .catch(e => {
+        if (e instanceof HttpException) {
+          throw e;
+        } else {
+          throw new NotFoundException(`Invalid order or product id`);
+        }
+      });
+  }
+
+  private async updateOrderAsCanceled(id: string, userId: string, data: CancelOrderDto) {
+    const order = await this.ordersRepository.findOrder(id);
+    if (!order || order.state === OrderState.received) {
+      const message = 'Only orders not in received state can be transitioned into the canceled state';
+      throw new BadRequestException(message);
+    }
+
+    return this.ordersRepository.updateOrderAsCanceled(id, userId, data)
+      .catch(_ => {
+        throw new NotFoundException(`Invalid order`);
+      });
   }
 }
