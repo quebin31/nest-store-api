@@ -5,10 +5,6 @@ import { ProductImage, ProductState } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
 import omit from 'lodash.omit';
 
-export type UpdateProduct = Omit<UpdateProductDto, 'availableStockDelta'> & {
-  availableStock: number
-}
-
 export type GetProducts = {
   sort: 'desc' | 'asc',
   skip: number,
@@ -104,7 +100,7 @@ export class ProductsRepository {
           category,
           state: data.active ? ProductState.active : ProductState.inactive,
           availableStock: {
-            increment: data.availableStockDelta,
+            increment: data.availableStockDelta ?? 0,
           }
         },
         include: { images: true },

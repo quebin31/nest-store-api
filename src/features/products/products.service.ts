@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { GetProducts, ProductsRepository } from './products.repository';
 import { CreateProductDto } from './dto/create-product.dto';
 import { MulterFile } from '../../utils/multer';
@@ -87,8 +87,12 @@ export class ProductsService {
     }
 
     const updated = await this.productsRepository.updateProduct(product.id, data)
-      .catch(_ => {
-        throw new NotFoundException('No product was found or category is invalid');
+      .catch(e => {
+        if (e instanceof HttpException) {
+          throw e
+        } else {
+          throw new NotFoundException('No product was found or category is invalid');
+        }
       });
 
     return ProductsService.createProductResponse(updated);
