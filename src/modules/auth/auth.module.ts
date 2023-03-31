@@ -6,18 +6,17 @@ import { LocalStrategy } from './local.strategy';
 import { EmailModule } from '../../shared/email/email.module';
 import { VerificationModule } from '../verification/verification.module';
 import { JwtStrategy } from './jwt.strategy';
-import { RepositoriesModule } from '../../shared/repositories/repositories.module';
+import { SharedUsersModule } from '../../shared/users/users.module';
 
 @Module({
+  controllers: [AuthController],
   imports: [
     jwtModuleRegister(),
-    RepositoriesModule,
+    SharedUsersModule,
     EmailModule,
     VerificationModule,
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService],
-  controllers: [AuthController],
 })
 export class AuthModule {
 }

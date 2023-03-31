@@ -3,7 +3,7 @@ import { VerificationRepository } from './verification.repository';
 import { EmailService } from '../../shared/email/email.service';
 import { TooManyRequestsException } from '../../errors';
 import pick from 'lodash.pick';
-import { UsersRepository } from '../../shared/repositories/users.repository';
+import { UsersRepository } from '../../shared/users/users.repository';
 
 export type SendVerificationOptions = {
   user: { id: string, email?: string },

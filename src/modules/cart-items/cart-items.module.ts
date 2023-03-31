@@ -4,8 +4,8 @@ import { CartItemsRepository } from './cart-items.repository';
 import { CartItemsService } from './cart-items.service';
 
 @Module({
-  providers: [CartItemsRepository, CartItemsService],
   controllers: [CartItemsController],
+  providers: [CartItemsRepository, CartItemsService],
 })
 export class CartItemsModule {
 }

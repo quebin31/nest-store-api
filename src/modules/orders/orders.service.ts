@@ -15,7 +15,7 @@ import {
 import { OrderState, ProductState, Role } from '@prisma/client';
 import pick from 'lodash.pick';
 import { GetOrdersDto } from './dto/get-orders.dto';
-import { UsersRepository } from '../../shared/repositories/users.repository';
+import { UsersRepository } from '../../shared/users/users.repository';
 import omit from 'lodash.omit';
 import { CancelOrderDto, ConfirmOrderDto, UpdateOrderDto } from './dto/update-order.dto';
 

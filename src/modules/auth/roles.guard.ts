@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { OptionalAuthRequest } from './jwt.strategy';
-import { UsersRepository } from '../../shared/repositories/users.repository';
+import { UsersRepository } from '../../shared/users/users.repository';
 import { Reflector } from '@nestjs/core';
 import { RolesKey } from '../../decorators/roles';
 import { Role } from '@prisma/client';
