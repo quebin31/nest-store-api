@@ -24,7 +24,9 @@ export class FavoritesRepository {
         user: { connect: { id: userId } },
       },
       include: {
-        product: { include: { images: true } },
+        product: {
+          include: { images: { orderBy: { createdAt: 'desc' } } },
+        },
       },
     });
   }
@@ -39,7 +41,9 @@ export class FavoritesRepository {
       },
       orderBy: { createdAt: options.sort },
       include: {
-        product: { include: { images: true } },
+        product: {
+          include: { images: { orderBy: { createdAt: 'desc' } } },
+        },
       },
     });
   }

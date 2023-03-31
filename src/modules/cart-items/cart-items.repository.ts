@@ -27,7 +27,9 @@ export class CartItemsRepository {
         product: { connect: { id: addCartItemDto.productId } },
       },
       include: {
-        product: { include: { images: true } },
+        product: {
+          include: { images: { orderBy: { createdAt: 'desc' } } },
+        },
       },
     });
   }
@@ -42,7 +44,9 @@ export class CartItemsRepository {
       },
       orderBy: { createdAt: options.sort },
       include: {
-        product: { include: { images: true } },
+        product: {
+          include: { images: { orderBy: { createdAt: 'desc' } } },
+        },
       },
     });
   }
@@ -56,7 +60,9 @@ export class CartItemsRepository {
         quantity: data.quantity,
       },
       include: {
-        product: { include: { images: true } },
+        product: {
+          include: { images: { orderBy: { createdAt: 'desc' } } },
+        },
       },
     });
   }
