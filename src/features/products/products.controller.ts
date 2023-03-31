@@ -1,5 +1,5 @@
 import { ProductsService } from './products.service';
-import { CreateProductFormDto } from './dto/create-product.dto';
+import { CreateProductFormDto } from '../../shared/dto/products/create-product.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImageFiles } from 'src/decorators/image-files';
 import { MulterFile } from 'src/utils/multer';
@@ -9,7 +9,7 @@ import { VerifiedGuard } from '../verification/verified.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../../decorators/roles';
 import { Role } from '@prisma/client';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { UpdateProductDto } from '../../shared/dto/products/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import {
   Body,

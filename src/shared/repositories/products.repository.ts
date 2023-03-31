@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../shared/prisma/prisma.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateProductDto } from '../dto/products/create-product.dto';
 import { ProductState } from '@prisma/client';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { UpdateProductDto } from '../dto/products/update-product.dto';
 import omit from 'lodash.omit';
-import { UploadedImage } from './product-images.service';
+import { UploadedImage } from '../../features/products/product-images.service';
 
 export type GetProducts = {
   sort: 'desc' | 'asc',

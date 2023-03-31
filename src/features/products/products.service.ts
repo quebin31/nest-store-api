@@ -1,10 +1,10 @@
 import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { GetProducts, ProductsRepository } from './products.repository';
-import { CreateProductDto } from './dto/create-product.dto';
+import { GetProducts, ProductsRepository } from '../../shared/repositories/products.repository';
+import { CreateProductDto } from '../../shared/dto/products/create-product.dto';
 import { MulterFile } from '../../utils/multer';
 import { Product, ProductImage, ProductState } from '@prisma/client';
 import omit from 'lodash.omit';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { UpdateProductDto } from '../../shared/dto/products/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import { ProductImagesService } from './product-images.service';
 

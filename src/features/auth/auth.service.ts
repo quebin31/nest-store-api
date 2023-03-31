@@ -8,7 +8,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UsersRepository } from '../users/users.repository';
+import { UsersRepository } from '../../shared/repositories/users.repository';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SendVerificationEmailEvent } from '../../events';
 

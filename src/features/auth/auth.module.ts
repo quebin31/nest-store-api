@@ -6,7 +6,7 @@ import { LocalStrategy } from './local.strategy';
 import { EmailModule } from '../../shared/email/email.module';
 import { VerificationModule } from '../verification/verification.module';
 import { JwtStrategy } from './jwt.strategy';
-import { RepositoriesModule } from '../../shared/repositories.module';
+import { RepositoriesModule } from '../../shared/repositories/repositories.module';
 
 @Module({
   imports: [

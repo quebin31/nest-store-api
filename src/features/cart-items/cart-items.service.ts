@@ -6,7 +6,7 @@ import { FullProduct, ProductsService } from '../products/products.service';
 import pick from 'lodash.pick';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-import { ProductsRepository } from '../products/products.repository';
+import { ProductsRepository } from '../../shared/repositories/products.repository';
 
 export type FullCartItem = CartItem & { product: FullProduct }
 
