@@ -12,8 +12,8 @@ import { FullProduct } from '../../types/products';
 @Injectable()
 export class ProductsService {
   constructor(
-    private productImagesService: ProductImagesService,
     private productsRepository: ProductsRepository,
+    private productImagesService: ProductImagesService,
   ) {
   }
 
@@ -35,14 +35,13 @@ export class ProductsService {
       throw new BadRequestException('Incoherent minQuantity and maxQuantity');
     }
 
-    const partialProduct = await this.productsRepository.createProduct(userId, data)
+    const newProduct = await this.productsRepository.createProduct(userId, data)
       .catch(_ => {
         throw new BadRequestException('Invalid manager or category');
       });
 
-    const productImages = await this.productImagesService.uploadProductImages(images);
-    const product = await this.productsRepository.createProductImages(partialProduct.id, productImages);
-    return ProductsService.createProductResponse(product);
+    const fullProduct = await this.productImagesService.createProductImages(newProduct.id, images);
+    return ProductsService.createProductResponse(fullProduct);
   }
 
   async getProduct(id: string) {

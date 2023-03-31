@@ -5,7 +5,7 @@ import { ProductState } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { omit } from 'lodash';
 import { GetProductsDto } from './dto/get-products.dto';
-import { FullProduct, ProductUploadedImage } from '../../types/products';
+import { FullProduct } from '../../types/products';
 
 export type GetProductsOptions = Omit<GetProductsDto, 'include'> & {
   skip: number,
@@ -29,24 +29,6 @@ export class ProductsRepository {
         createdBy: { connect: { id: userId } },
         category: { connect: { name: data.categoryName } },
       },
-    });
-  }
-
-  async createProductImages(id: string, images: ProductUploadedImage[]): Promise<FullProduct> {
-    return this.prismaService.product.update({
-      where: { id },
-      data: {
-        thumbnailUrl: images.at(0)?.imageUrl,
-        images: {
-          createMany: {
-            data: images.map(image => ({
-              id: image.imageId,
-              imageUrl: image.imageUrl,
-            })),
-          },
-        },
-      },
-      include: { images: true },
     });
   }
 
