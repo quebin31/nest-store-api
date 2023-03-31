@@ -2,19 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-import { ProductState } from '@prisma/client';
+import { CartItem, ProductState } from '@prisma/client';
+import { GetCartItemsDto } from './dto/get-cart-items.dto';
+import { FullProduct } from '../../shared/repositories/products.repository';
 
-export type GetCartItems = {
-  sort: 'desc' | 'asc',
-  user: string,
-}
+export type GetCartItemsOptions = GetCartItemsDto & { user: string }
+export type FullCartItem = CartItem & { product: FullProduct }
 
 @Injectable()
 export class CartItemsRepository {
   constructor(private prismaService: PrismaService) {
   }
 
-  async addCartItem(userId: string, addCartItemDto: AddCartItemDto) {
+  async addCartItem(userId: string, addCartItemDto: AddCartItemDto): Promise<FullCartItem> {
     return this.prismaService.cartItem.create({
       data: {
         quantity: addCartItemDto.quantity,
@@ -27,7 +27,7 @@ export class CartItemsRepository {
     });
   }
 
-  async findCartItems(options: GetCartItems) {
+  async findCartItems(options: GetCartItemsOptions): Promise<FullCartItem[]> {
     return this.prismaService.cartItem.findMany({
       where: {
         userId: options.user,
@@ -42,13 +42,13 @@ export class CartItemsRepository {
     });
   }
 
-  async updateCartItem(userId: string, productId: string, updateCartItemDto: UpdateCartItemDto) {
+  async updateCartItem(userId: string, productId: string, data: UpdateCartItemDto): Promise<FullCartItem> {
     return this.prismaService.cartItem.update({
       where: {
         userId_productId: { userId, productId },
       },
       data: {
-        quantity: updateCartItemDto.quantity,
+        quantity: data.quantity,
       },
       include: {
         product: { include: { images: true } },

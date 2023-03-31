@@ -1,19 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from '../dto/products/create-product.dto';
-import { ProductState } from '@prisma/client';
+import { Product, ProductImage, ProductState } from '@prisma/client';
 import { UpdateProductDto } from '../dto/products/update-product.dto';
 import omit from 'lodash.omit';
 import { UploadedImage } from '../../features/products/product-images.service';
+import { GetProductsDto } from '../dto/products/get-products.dto';
 
-export type GetProducts = {
-  sort: 'desc' | 'asc',
+export type GetProductsOptions = Omit<GetProductsDto, 'include'> & {
   skip: number,
-  take: number,
-  category?: string,
-  cursor?: Date,
-  states: Exclude<ProductState, 'deleted'>[]
+  states: Exclude<ProductState, 'deleted'>[],
 }
+
+export type FullProduct = Product & { images: ProductImage[] }
 
 @Injectable()
 export class ProductsRepository {
@@ -35,7 +34,7 @@ export class ProductsRepository {
     });
   }
 
-  async createProductImages(id: string, images: UploadedImage[]) {
+  async createProductImages(id: string, images: UploadedImage[]): Promise<FullProduct> {
     return this.prismaService.product.update({
       where: { id },
       data: {
@@ -53,7 +52,7 @@ export class ProductsRepository {
     });
   }
 
-  async findById(id: string) {
+  async findById(id: string): Promise<FullProduct | null> {
     const product = await this.prismaService.product.findUnique({
       where: { id },
       include: { images: true },
@@ -62,7 +61,7 @@ export class ProductsRepository {
     return !product || product.state === ProductState.deleted ? null : product;
   }
 
-  async findWithOwner(id: string, ownerId: string) {
+  async findWithOwner(id: string, ownerId: string): Promise<FullProduct | null> {
     const user = await this.prismaService.user.findUnique({
       where: { id: ownerId },
       include: { products: { where: { id }, include: { images: true } } },
@@ -71,7 +70,7 @@ export class ProductsRepository {
     return !user ? null : user.products.at(0) ?? null;
   }
 
-  async findProducts(options: GetProducts) {
+  async findProducts(options: GetProductsOptions): Promise<FullProduct[]> {
     const cursor = options.cursor === undefined
       ? undefined
       : { createdAt: options.cursor };
@@ -91,7 +90,7 @@ export class ProductsRepository {
     });
   }
 
-  async updateProduct(id: string, data: UpdateProductDto) {
+  async updateProduct(id: string, data: UpdateProductDto): Promise<FullProduct> {
     const category = data.categoryName === undefined
       ? undefined
       : { connect: { name: data.categoryName } };

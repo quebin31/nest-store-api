@@ -1,11 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FavoritesRepository, GetFavorites } from './favorites.repository';
-import { ProductUserFavorite } from '@prisma/client';
-import { FullProduct, ProductsService } from '../products/products.service';
+import { FavoritesRepository, FullFavorite, GetFavorites } from './favorites.repository';
+import { ProductsService } from '../products/products.service';
 import { GetFavoritesDto } from './dto/get-favorites.dto';
 import { ProductsRepository } from '../../shared/repositories/products.repository';
-
-export type FullFavorite = ProductUserFavorite & { product: FullProduct }
 
 @Injectable()
 export class FavoritesService {

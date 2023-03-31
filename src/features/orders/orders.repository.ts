@@ -1,15 +1,27 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
-import { OrderState, ProductState } from '@prisma/client';
+import {
+  Order,
+  OrderCancelCode,
+  OrderCancelReason,
+  OrderItem,
+  OrderState,
+  Product,
+  ProductState,
+} from '@prisma/client';
 import { CancelOrderDto, UpdateProductOrderDto } from './dto/update-order.dto';
+import { GetOrdersDto } from './dto/get-orders.dto';
 
-export type GetOrders = {
-  sort: 'desc' | 'asc',
+export type GetOrdersOptions = Omit<GetOrdersDto, 'state'> & {
   skip: number,
-  take: number,
-  user?: string,
-  cursor?: Date,
   states: OrderState[],
+}
+
+export type FullCancelReason = OrderCancelReason & { code: OrderCancelCode }
+export type FullOrderItem = OrderItem & { product: Product }
+export type FullOrder = Order & {
+  items: FullOrderItem[],
+  cancelReason?: FullCancelReason | null,
 }
 
 @Injectable()
@@ -71,7 +83,7 @@ export class OrdersRepository {
     });
   }
 
-  async findOrders(options: GetOrders) {
+  async findOrders(options: GetOrdersOptions) {
     const cursor = options.cursor === undefined
       ? undefined
       : { createdAt: options.cursor };

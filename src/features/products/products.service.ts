@@ -1,14 +1,16 @@
 import { BadRequestException, HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { GetProducts, ProductsRepository } from '../../shared/repositories/products.repository';
+import {
+  FullProduct,
+  GetProductsOptions,
+  ProductsRepository,
+} from '../../shared/repositories/products.repository';
 import { CreateProductDto } from '../../shared/dto/products/create-product.dto';
 import { MulterFile } from '../../utils/multer';
-import { Product, ProductImage, ProductState } from '@prisma/client';
+import { ProductState } from '@prisma/client';
 import omit from 'lodash.omit';
 import { UpdateProductDto } from '../../shared/dto/products/update-product.dto';
-import { GetProductsDto } from './dto/get-products.dto';
+import { GetProductsDto } from '../../shared/dto/products/get-products.dto';
 import { ProductImagesService } from './product-images.service';
-
-export type FullProduct = Product & { images: ProductImage[] }
 
 @Injectable()
 export class ProductsService {
@@ -63,13 +65,10 @@ export class ProductsService {
       states = [getProductsDto.include];
     }
 
-    const options: GetProducts = {
-      states,
-      sort: getProductsDto.sort,
+    const options: GetProductsOptions = {
+      ...getProductsDto,
+      states: states,
       skip: getProductsDto.cursor !== undefined ? 1 : 0,
-      take: getProductsDto.take,
-      category: getProductsDto.category,
-      cursor: getProductsDto.cursor,
     };
 
     const products = await this.productsRepository.findProducts(options);

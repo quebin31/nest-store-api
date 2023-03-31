@@ -1,14 +1,13 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CartItemsRepository } from './cart-items.repository';
+import { CartItemsRepository, FullCartItem, GetCartItemsOptions } from './cart-items.repository';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
-import { CartItem, Product } from '@prisma/client';
-import { FullProduct, ProductsService } from '../products/products.service';
+import { Product } from '@prisma/client';
+import { ProductsService } from '../products/products.service';
 import pick from 'lodash.pick';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { ProductsRepository } from '../../shared/repositories/products.repository';
 
-export type FullCartItem = CartItem & { product: FullProduct }
 
 @Injectable()
 export class CartItemsService {
@@ -49,11 +48,7 @@ export class CartItemsService {
   }
 
   async getCartItems(userId: string, getCartItemsDto: GetCartItemsDto) {
-    const options = {
-      sort: getCartItemsDto.sort,
-      user: userId,
-    };
-
+    const options: GetCartItemsOptions = { ...getCartItemsDto, user: userId };
     const cartItems = await this.cartItemsRepository.findCartItems(options);
     return cartItems.map(CartItemsService.createCartItemResponse);
   }

@@ -10,7 +10,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../../decorators/roles';
 import { Role } from '@prisma/client';
 import { UpdateProductDto } from '../../shared/dto/products/update-product.dto';
-import { GetProductsDto } from './dto/get-products.dto';
+import { GetProductsDto } from '../../shared/dto/products/get-products.dto';
 import {
   Body,
   Controller,

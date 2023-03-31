@@ -1,32 +1,23 @@
 import {
   BadRequestException,
-  ForbiddenException, HttpException,
+  ForbiddenException,
+  HttpException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { GetOrders, OrdersRepository } from './orders.repository';
 import {
-  Order,
-  OrderCancelCode,
-  OrderCancelReason,
-  OrderItem,
-  OrderState,
-  Product,
-  ProductState,
-  Role,
-} from '@prisma/client';
+  FullCancelReason,
+  FullOrder,
+  FullOrderItem,
+  GetOrdersOptions,
+  OrdersRepository,
+} from './orders.repository';
+import { OrderState, ProductState, Role } from '@prisma/client';
 import pick from 'lodash.pick';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { UsersRepository } from '../../shared/repositories/users.repository';
 import omit from 'lodash.omit';
 import { CancelOrderDto, ConfirmOrderDto, UpdateOrderDto } from './dto/update-order.dto';
-
-export type FullCancelReason = OrderCancelReason & { code: OrderCancelCode }
-
-export type FullOrder = Order & {
-  items: (OrderItem & { product: Product })[],
-  cancelReason?: FullCancelReason | null,
-}
 
 @Injectable()
 export class OrdersService {
@@ -36,10 +27,13 @@ export class OrdersService {
   ) {
   }
 
-  static createProductItem(product: Product) {
+  static createOrderItem(item: FullOrderItem) {
     return {
-      ...pick(product, ['id', 'createdAt', 'name', 'thumbnailUrl', 'createdById']),
-      active: product.state === ProductState.active,
+      ...pick(item, ['quantity', 'lockedPrice']),
+      product: {
+        ...pick(item.product, ['id', 'createdAt', 'name', 'thumbnailUrl', 'createdById']),
+        active: item.product.state === ProductState.active,
+      },
     };
   }
 
@@ -57,10 +51,7 @@ export class OrdersService {
       cancelReason: order.cancelReason
         ? OrdersService.createCancelReasonResponse(order.cancelReason)
         : null,
-      orderItems: order.items.map(item => ({
-        ...pick(item, ['quantity', 'lockedPrice']),
-        product: OrdersService.createProductItem(item.product),
-      })),
+      orderItems: order.items.map(OrdersService.createOrderItem),
     };
   }
 
@@ -89,13 +80,11 @@ export class OrdersService {
       user = getOrdersDto.user;
     }
 
-    const options: GetOrders = {
+    const options: GetOrdersOptions = {
+      ...getOrdersDto,
       user,
-      sort: getOrdersDto.sort,
-      skip: getOrdersDto.cursor !== undefined ? 1 : 0,
-      take: getOrdersDto.take,
-      cursor: getOrdersDto.cursor,
       states: getOrdersDto.state,
+      skip: getOrdersDto.cursor !== undefined ? 1 : 0,
     };
 
     const orders = await this.ordersRepository.findOrders(options);

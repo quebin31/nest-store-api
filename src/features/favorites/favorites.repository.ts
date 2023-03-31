@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
-import { ProductState } from '@prisma/client';
+import { ProductState, ProductUserFavorite } from '@prisma/client';
+import { GetFavoritesDto } from './dto/get-favorites.dto';
+import { FullProduct } from '../../shared/repositories/products.repository';
 
-export type GetFavorites = {
-  sort: 'desc' | 'asc',
-  user: string,
-}
+export type GetFavorites = GetFavoritesDto & { user: string }
+export type FullFavorite = ProductUserFavorite & { product: FullProduct }
 
 @Injectable()
 export class FavoritesRepository {
   constructor(private prismaService: PrismaService) {
   }
 
-  async addToFavorites(userId: string, productId: string) {
+  async addToFavorites(userId: string, productId: string): Promise<FullFavorite> {
     return this.prismaService.productUserFavorite.create({
       data: {
         product: { connect: { id: productId } },
@@ -24,7 +24,7 @@ export class FavoritesRepository {
     });
   }
 
-  async findFavorites(options: GetFavorites) {
+  async findFavorites(options: GetFavorites): Promise<FullFavorite[]> {
     return this.prismaService.productUserFavorite.findMany({
       where: {
         userId: options.user,
