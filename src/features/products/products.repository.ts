@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { ProductImage, ProductState } from '@prisma/client';
+import { ProductState } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
 import omit from 'lodash.omit';
+import { UploadedImage } from './product-images.service';
 
 export type GetProducts = {
   sort: 'desc' | 'asc',
@@ -34,18 +35,21 @@ export class ProductsRepository {
     });
   }
 
-  async createProductImages(id: string, images: { id: string, url: string }[]) {
-    return this.prismaService.$transaction(async tx => {
-      const productImages: ProductImage[] = [];
-      for (const image of images) {
-        const productImage = await tx.productImage.create({
-          data: { id: image.id, imageUrl: image.url, product: { connect: { id } } },
-        });
-
-        productImages.push(productImage);
-      }
-
-      return productImages;
+  async createProductImages(id: string, images: UploadedImage[]) {
+    return this.prismaService.product.update({
+      where: { id },
+      data: {
+        thumbnailUrl: images.at(0)?.imageUrl,
+        images: {
+          createMany: {
+            data: images.map(image => ({
+              id: image.imageId,
+              imageUrl: image.imageUrl,
+            })),
+          },
+        },
+      },
+      include: { images: true },
     });
   }
 
@@ -101,7 +105,7 @@ export class ProductsRepository {
           state: data.active ? ProductState.active : ProductState.inactive,
           availableStock: {
             increment: data.availableStockDelta ?? 0,
-          }
+          },
         },
         include: { images: true },
       });
@@ -115,7 +119,7 @@ export class ProductsRepository {
       }
 
       return product;
-    })
+    });
   }
 
   async deleteProduct(id: string, ownerId: string) {

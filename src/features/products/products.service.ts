@@ -6,12 +6,16 @@ import { Product, ProductImage, ProductState } from '@prisma/client';
 import omit from 'lodash.omit';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
+import { ProductImagesService } from './product-images.service';
 
 export type FullProduct = Product & { images: ProductImage[] }
 
 @Injectable()
 export class ProductsService {
-  constructor(private productsRepository: ProductsRepository) {
+  constructor(
+    private productImagesService: ProductImagesService,
+    private productsRepository: ProductsRepository,
+  ) {
   }
 
   static createProductResponse(product: FullProduct) {
@@ -32,19 +36,14 @@ export class ProductsService {
       throw new BadRequestException('Incoherent minQuantity and maxQuantity');
     }
 
-    const product = await this.productsRepository.createProduct(userId, data)
+    const partialProduct = await this.productsRepository.createProduct(userId, data)
       .catch(_ => {
         throw new BadRequestException('Invalid manager or category');
       });
 
-    // TODO: Upload image to S3 and create product images
-
-    const fullProduct = await this.productsRepository.findById(product.id);
-    if (!fullProduct) {
-      throw new NotFoundException('Product not found');
-    }
-
-    return ProductsService.createProductResponse(fullProduct);
+    const productImages = await this.productImagesService.uploadProductImages(images);
+    const product = await this.productsRepository.createProductImages(partialProduct.id, productImages);
+    return ProductsService.createProductResponse(product);
   }
 
   async getProduct(id: string) {
@@ -89,7 +88,7 @@ export class ProductsService {
     const updated = await this.productsRepository.updateProduct(product.id, data)
       .catch(e => {
         if (e instanceof HttpException) {
-          throw e
+          throw e;
         } else {
           throw new NotFoundException('No product was found or category is invalid');
         }
