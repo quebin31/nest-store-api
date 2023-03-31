@@ -10,6 +10,7 @@ import { ProductsModule } from './features/products/products.module';
 import { FavoritesModule } from './features/favorites/favorites.module';
 import { CartItemsModule } from './features/cart-items/cart-items.module';
 import { OrdersModule } from './features/orders/orders.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { OrdersModule } from './features/orders/orders.module';
     EventEmitterModule.forRoot(),
     PrismaModule,
     RedisModule,
+    S3Module,
     AuthModule,
     UsersModule,
     ProductsModule,
