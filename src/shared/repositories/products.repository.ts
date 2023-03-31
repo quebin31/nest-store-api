@@ -4,7 +4,7 @@ import { CreateProductDto } from '../dto/products/create-product.dto';
 import { Product, ProductImage, ProductState } from '@prisma/client';
 import { UpdateProductDto } from '../dto/products/update-product.dto';
 import omit from 'lodash.omit';
-import { UploadedImage } from '../../features/products/product-images.service';
+import { UploadedImage } from '../../modules/products/product-images.service';
 import { GetProductsDto } from '../dto/products/get-products.dto';
 
 export type GetProductsOptions = Omit<GetProductsDto, 'include'> & {

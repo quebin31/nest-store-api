@@ -1,7 +1,7 @@
 import { PrismaClient, Role } from '@prisma/client';
 import { readFile } from 'fs/promises';
 import { plainToInstance } from 'class-transformer';
-import { SignUpDto } from '../../src/features/auth/dto/sign-up.dto';
+import { SignUpDto } from '../../src/modules/auth/dto/sign-up.dto';
 import { validateOrReject } from 'class-validator';
 import { hash } from 'bcrypt';
 
