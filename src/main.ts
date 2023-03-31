@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { Config } from './config';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from './prisma/prisma.service';
+import { PrismaService } from './shared/prisma/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

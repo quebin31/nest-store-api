@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { VerificationRepository } from './verification.repository';
-import { EmailService } from '../../email/email.service';
+import { EmailService } from '../../shared/email/email.service';
 import { TooManyRequestsException } from '../../errors';
 import pick from 'lodash.pick';
 import { UsersRepository } from '../users/users.repository';

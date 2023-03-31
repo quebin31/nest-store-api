@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Config } from '../config';
+import { Config } from '../../config';
 import sendGridClient from '@sendgrid/mail';
 
 @Injectable()

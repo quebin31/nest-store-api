@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { S3Service } from '../../s3/s3.service';
+import { S3Service } from '../../shared/s3/s3.service';
 import { MulterFile } from '../../utils/multer';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
