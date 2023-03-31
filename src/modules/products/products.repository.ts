@@ -3,7 +3,7 @@ import { PrismaService } from '../../shared/prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ProductState } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
-import omit from 'lodash.omit';
+import { omit } from 'lodash';
 import { GetProductsDto } from './dto/get-products.dto';
 import { FullProduct, ProductUploadedImage } from '../../types/products';
 

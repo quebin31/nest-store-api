@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { VerificationRepository } from './verification.repository';
 import { EmailService } from '../../shared/email/email.service';
 import { TooManyRequestsException } from '../../errors';
-import pick from 'lodash.pick';
+import { pick } from 'lodash';
 import { UsersRepository } from '../../shared/users/users.repository';
 
 export type SendVerificationOptions = {

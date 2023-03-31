@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { UserUpdatedEmailEvent } from '../../events';
-import pick from 'lodash.pick';
+import { pick } from 'lodash';
 
 @Injectable()
 export class UsersService {

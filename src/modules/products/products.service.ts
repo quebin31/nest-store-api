@@ -3,7 +3,7 @@ import { GetProductsOptions, ProductsRepository } from './products.repository';
 import { CreateProductDto } from './dto/create-product.dto';
 import { MulterFile } from '../../utils/multer';
 import { ProductState } from '@prisma/client';
-import omit from 'lodash.omit';
+import { omit } from 'lodash';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import { ProductImagesService } from './product-images.service';

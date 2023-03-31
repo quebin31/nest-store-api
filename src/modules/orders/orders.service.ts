@@ -7,8 +7,7 @@ import {
 } from '@nestjs/common';
 import { GetOrdersOptions, OrdersRepository } from './orders.repository';
 import { OrderState, ProductState, Role } from '@prisma/client';
-import pick from 'lodash.pick';
-import omit from 'lodash.omit';
+import { omit, pick } from 'lodash';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { UsersRepository } from '../../shared/users/users.repository';
 import { CancelOrderDto, ConfirmOrderDto, UpdateOrderDto } from './dto/update-order.dto';

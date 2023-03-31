@@ -3,7 +3,7 @@ import { CartItemsRepository, GetCartItemsOptions } from './cart-items.repositor
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { Product } from '@prisma/client';
 import { ProductsService } from '../products/products.service';
-import pick from 'lodash.pick';
+import { pick } from 'lodash';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { FullCartItem } from '../../types/cart-items';
