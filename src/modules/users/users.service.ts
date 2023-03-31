@@ -31,15 +31,15 @@ export class UsersService {
     return UsersService.createUserResponse(user, isOwner);
   }
 
-  async updateUser(id: string, updateUserDto: UpdateUserDto) {
+  async updateUser(id: string, data: UpdateUserDto) {
     const user = await this.usersRepository.findById(id);
     if (!user) {
       throw new NotFoundException(`No user found with id ${id}`);
     }
 
-    const isUpdatingEmail = updateUserDto.email !== undefined && updateUserDto.email !== user.email;
+    const isUpdatingEmail = data.email !== undefined && data.email !== user.email;
     const updated = await this.usersRepository.updateUser(id, {
-      ...updateUserDto,
+      ...data,
       verifiedAt: isUpdatingEmail ? null : undefined,
     });
 
