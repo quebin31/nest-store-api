@@ -10,7 +10,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import { Body, Controller, Delete, Get, HttpCode, Patch, Post, Query, Req } from '@nestjs/common';
 import { VerifiedUser } from '../../decorators/verified';
-import { ProductImages } from './product-images.decorator';
+import { ProductImages } from './images/product-images.decorator';
 import { IdParam } from '../../decorators/params';
 
 @Controller({ path: '/products', version: '1' })

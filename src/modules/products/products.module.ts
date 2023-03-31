@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
-import { ProductImagesService } from './product-images.service';
+import { ProductImagesService } from './images/product-images.service';
 import { ProductsRepository } from './products.repository';
 import { SharedUsersModule } from '../../shared/users/users.module';
-import { ProductImagesRepository } from './product-images.repository';
+import { ProductImagesRepository } from './images/product-images.repository';
+import { ProductImagesController } from './images/product-images.controller';
 
 @Module({
-  controllers: [ProductsController],
+  controllers: [ProductsController, ProductImagesController],
   imports: [SharedUsersModule],
   providers: [
     ProductsRepository,

@@ -33,21 +33,21 @@ export class ProductsRepository {
   }
 
   async findById(id: string): Promise<FullProduct | null> {
-    const product = await this.prismaService.product.findUnique({
-      where: { id },
-      include: { images: true },
+    return this.prismaService.product.findFirst({
+      where: { id, state: { not: ProductState.deleted } },
+      include: { images: { orderBy: { createdAt: 'desc' } } },
     });
-
-    return !product || product.state === ProductState.deleted ? null : product;
   }
 
   async findWithOwner(id: string, ownerId: string): Promise<FullProduct | null> {
-    const user = await this.prismaService.user.findUnique({
-      where: { id: ownerId },
-      include: { products: { where: { id }, include: { images: true } } },
+    return this.prismaService.product.findFirst({
+      where: {
+        id,
+        createdById: ownerId,
+        state: { not: ProductState.deleted },
+      },
+      include: { images: { orderBy: { createdAt: 'desc' } } },
     });
-
-    return !user ? null : user.products.at(0) ?? null;
   }
 
   async findProducts(options: GetProductsOptions): Promise<FullProduct[]> {
@@ -66,7 +66,7 @@ export class ProductsRepository {
       skip: options.skip,
       take: options.take,
       cursor,
-      include: { images: true },
+      include: { images: { orderBy: { createdAt: 'desc' } } },
     });
   }
 
@@ -86,7 +86,7 @@ export class ProductsRepository {
             increment: data.availableStockDelta ?? 0,
           },
         },
-        include: { images: true },
+        include: { images: { orderBy: { createdAt: 'desc' } } },
       });
 
       if (product.minQuantity > product.maxQuantity) {
