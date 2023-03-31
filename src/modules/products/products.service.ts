@@ -3,13 +3,13 @@ import {
   FullProduct,
   GetProductsOptions,
   ProductsRepository,
-} from '../../shared/repositories/products.repository';
-import { CreateProductDto } from '../../shared/dto/products/create-product.dto';
+} from './products.repository';
+import { CreateProductDto } from './dto/create-product.dto';
 import { MulterFile } from '../../utils/multer';
 import { ProductState } from '@prisma/client';
 import omit from 'lodash.omit';
-import { UpdateProductDto } from '../../shared/dto/products/update-product.dto';
-import { GetProductsDto } from '../../shared/dto/products/get-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { GetProductsDto } from './dto/get-products.dto';
 import { ProductImagesService } from './product-images.service';
 
 @Injectable()

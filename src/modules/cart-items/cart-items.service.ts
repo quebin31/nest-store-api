@@ -6,15 +6,11 @@ import { ProductsService } from '../products/products.service';
 import pick from 'lodash.pick';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-import { ProductsRepository } from '../../shared/repositories/products.repository';
 
 
 @Injectable()
 export class CartItemsService {
-  constructor(
-    private cartItemsRepository: CartItemsRepository,
-    private productsRepository: ProductsRepository,
-  ) {
+  constructor(private cartItemsRepository: CartItemsRepository) {
   }
 
   static createCartItemResponse(cartItem: FullCartItem) {
@@ -29,7 +25,7 @@ export class CartItemsService {
   }
 
   async addCartItem(userId: string, addCartItemDto: AddCartItemDto) {
-    const product = await this.productsRepository.findById(addCartItemDto.productId);
+    const product = await this.cartItemsRepository.findProductById(addCartItemDto.productId);
     if (!product) {
       throw new NotFoundException('Invalid product');
     }
@@ -54,7 +50,7 @@ export class CartItemsService {
   }
 
   async updateCartItem(userId: string, productId: string, updateCartItemDto: UpdateCartItemDto) {
-    const product = await this.productsRepository.findById(productId);
+    const product = await this.cartItemsRepository.findProductById(productId);
     if (!product) {
       try {
         await this.deleteCartItem(userId, productId);

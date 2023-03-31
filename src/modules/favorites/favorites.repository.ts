@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 import { ProductState, ProductUserFavorite } from '@prisma/client';
 import { GetFavoritesDto } from './dto/get-favorites.dto';
-import { FullProduct } from '../../shared/repositories/products.repository';
+import { FullProduct } from '../products/products.repository';
 
 export type GetFavorites = GetFavoritesDto & { user: string }
 export type FullFavorite = ProductUserFavorite & { product: FullProduct }
@@ -10,6 +10,12 @@ export type FullFavorite = ProductUserFavorite & { product: FullProduct }
 @Injectable()
 export class FavoritesRepository {
   constructor(private prismaService: PrismaService) {
+  }
+
+  async findProductById(id: string) {
+    return this.prismaService.product.findFirst({
+      where: { id, state: { not: ProductState.deleted } },
+    });
   }
 
   async addToFavorites(userId: string, productId: string): Promise<FullFavorite> {

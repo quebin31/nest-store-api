@@ -2,14 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { FavoritesRepository, FullFavorite, GetFavorites } from './favorites.repository';
 import { ProductsService } from '../products/products.service';
 import { GetFavoritesDto } from './dto/get-favorites.dto';
-import { ProductsRepository } from '../../shared/repositories/products.repository';
 
 @Injectable()
 export class FavoritesService {
-  constructor(
-    private favoritesRepository: FavoritesRepository,
-    private productsRepository: ProductsRepository,
-  ) {
+  constructor(private favoritesRepository: FavoritesRepository) {
   }
 
   static createFavoriteResponse(favorite: FullFavorite) {
@@ -20,7 +16,7 @@ export class FavoritesService {
   }
 
   async addToFavorites(userId: string, productId: string) {
-    const product = await this.productsRepository.findById(productId);
+    const product = await this.favoritesRepository.findProductById(productId);
     if (!product) {
       throw new NotFoundException(`Couldn't find product`);
     }

@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateProductDto } from '../dto/products/create-product.dto';
+import { PrismaService } from '../../shared/prisma/prisma.service';
+import { CreateProductDto } from './dto/create-product.dto';
 import { Product, ProductImage, ProductState } from '@prisma/client';
-import { UpdateProductDto } from '../dto/products/update-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import omit from 'lodash.omit';
-import { UploadedImage } from '../../modules/products/product-images.service';
-import { GetProductsDto } from '../dto/products/get-products.dto';
+import { UploadedImage } from './product-images.service';
+import { GetProductsDto } from './dto/get-products.dto';
 
 export type GetProductsOptions = Omit<GetProductsDto, 'include'> & {
   skip: number,

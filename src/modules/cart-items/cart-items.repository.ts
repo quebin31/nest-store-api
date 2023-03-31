@@ -4,7 +4,7 @@ import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { CartItem, ProductState } from '@prisma/client';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
-import { FullProduct } from '../../shared/repositories/products.repository';
+import { FullProduct } from '../products/products.repository';
 
 export type GetCartItemsOptions = GetCartItemsDto & { user: string }
 export type FullCartItem = CartItem & { product: FullProduct }
@@ -12,6 +12,12 @@ export type FullCartItem = CartItem & { product: FullProduct }
 @Injectable()
 export class CartItemsRepository {
   constructor(private prismaService: PrismaService) {
+  }
+
+  async findProductById(id: string) {
+    return this.prismaService.product.findFirst({
+      where: { id, state: { not: ProductState.deleted } },
+    });
   }
 
   async addCartItem(userId: string, addCartItemDto: AddCartItemDto): Promise<FullCartItem> {
