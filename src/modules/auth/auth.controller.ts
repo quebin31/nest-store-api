@@ -1,15 +1,14 @@
-import { Body, Controller, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
-import { LocalAuthGuard } from './local-auth.guard';
 import { Role, User } from '@prisma/client';
 import { Request } from 'express';
 import { Public } from '../../decorators/public';
 import { AuthRequest, OptionalAuthRequest } from './jwt.strategy';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { VerificationService } from '../verification/verification.service';
-import { RolesGuard } from './roles.guard';
 import { Roles } from '../../decorators/roles';
+import { LocalAuth } from './local-auth.guard';
 
 @Controller({ path: '/auth', version: '1' })
 export class AuthController {
@@ -21,7 +20,6 @@ export class AuthController {
 
   @Public({ optionalAuth: true })
   @Roles(Role.admin)
-  @UseGuards(RolesGuard)
   @HttpCode(201)
   @Post('/sign-up')
   async signUp(@Body() data: SignUpDto, @Req() req: OptionalAuthRequest) {
@@ -29,7 +27,7 @@ export class AuthController {
   }
 
   @Public()
-  @UseGuards(LocalAuthGuard)
+  @LocalAuth()
   @HttpCode(200)
   @Post('/sign-in')
   async signIn(@Req() req: Request) {

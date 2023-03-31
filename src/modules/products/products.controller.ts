@@ -1,30 +1,17 @@
 import { ProductsService } from './products.service';
 import { CreateProductFormDto } from './dto/create-product.dto';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImageFiles } from 'src/decorators/image-files';
 import { MulterFile } from 'src/utils/multer';
 import { Public } from 'src/decorators/public';
 import { AuthRequest } from '../auth/jwt.strategy';
-import { VerifiedGuard } from '../verification/verified.guard';
-import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../../decorators/roles';
 import { Role } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Patch, Post, Query, Req } from '@nestjs/common';
+import { VerifiedUser } from '../../decorators/verified';
+import { ProductImages } from './product-images.decorator';
+import { IdParam } from '../../decorators/params';
 
 @Controller({ path: '/products', version: '1' })
 export class ProductsController {
@@ -38,10 +25,9 @@ export class ProductsController {
   }
 
   @Roles(Role.manager)
-  @UseGuards(VerifiedGuard, RolesGuard)
   @HttpCode(201)
   @Post('/')
-  @UseInterceptors(FilesInterceptor('images', 5))
+  @ProductImages(5)
   async createProduct(
     @Body() form: CreateProductFormDto,
     @Req() req: AuthRequest,
@@ -52,7 +38,7 @@ export class ProductsController {
 
   @Public()
   @Get('/:id')
-  async getProduct(@Param('id') productId: string) {
+  async getProduct(@IdParam() productId: string) {
     return this.productsService.getProduct(productId);
   }
 
@@ -63,22 +49,22 @@ export class ProductsController {
   }
 
   @Roles(Role.manager)
-  @UseGuards(VerifiedGuard, RolesGuard)
+  @VerifiedUser()
   @HttpCode(200)
   @Patch('/:id')
   async updateProduct(
     @Body() data: UpdateProductDto,
     @Req() req: AuthRequest,
-    @Param('id') productId: string,
+    @IdParam() productId: string,
   ) {
     return this.productsService.updateProduct(productId, req.user.id, data);
   }
 
   @Roles(Role.manager)
-  @UseGuards(VerifiedGuard, RolesGuard)
+  @VerifiedUser()
   @HttpCode(200)
   @Delete('/:id')
-  async deleteProduct(@Req() req: AuthRequest, @Param('id') productId: string) {
+  async deleteProduct(@Req() req: AuthRequest, @IdParam() productId: string) {
     await this.productsService.deleteProduct(productId, req.user.id);
   }
 }

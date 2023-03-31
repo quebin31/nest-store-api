@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Post, Query, Req } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { AddToFavoritesDto } from './dto/add-to-favorites.dto';
 import { AuthRequest } from '../auth/jwt.strategy';
 import { GetFavoritesDto } from './dto/get-favorites.dto';
+import { IdParam } from '../../decorators/params';
 
 @Controller({ path: '/favorites', version: '1' })
 export class FavoritesController {
@@ -21,7 +22,7 @@ export class FavoritesController {
 
   @Delete('/:id')
   @HttpCode(204)
-  async deleteFavorite(@Param('id') productId: string, @Req() req: AuthRequest) {
+  async deleteFavorite(@IdParam() productId: string, @Req() req: AuthRequest) {
     await this.favoritesService.deleteFavorite(req.user.id, productId);
   }
 }

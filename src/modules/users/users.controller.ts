@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, Param, Patch, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { AuthRequest, OptionalAuthRequest } from '../auth/jwt.strategy';
 import { Public } from '../../decorators/public';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { IdParam } from '../../decorators/params';
 
 @Controller({ path: '/users', version: '1' })
 export class UsersController {
@@ -11,7 +12,7 @@ export class UsersController {
 
   @Public({ optionalAuth: true })
   @Get('/:id')
-  async getUser(@Req() req: OptionalAuthRequest, @Param('id') id: string) {
+  async getUser(@Req() req: OptionalAuthRequest, @IdParam() id: string) {
     const isOwner = req.user?.id === id;
     return this.usersService.findById(id, isOwner);
   }

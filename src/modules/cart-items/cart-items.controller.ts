@@ -1,20 +1,10 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  Patch,
-  Post,
-  Query,
-  Req,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Patch, Post, Query, Req } from '@nestjs/common';
 import { AuthRequest } from '../auth/jwt.strategy';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { CartItemsService } from './cart-items.service';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { IdParam } from '../../decorators/params';
 
 @Controller({ path: '/cart-items.ts', version: '1' })
 export class CartItemsController {
@@ -34,7 +24,7 @@ export class CartItemsController {
   @Patch('/:id')
   @HttpCode(200)
   async updateCartItem(
-    @Param('id') productId: string,
+    @IdParam() productId: string,
     @Req() req: AuthRequest,
     @Body() data: UpdateCartItemDto,
   ) {
@@ -43,7 +33,7 @@ export class CartItemsController {
 
   @Delete('/:id')
   @HttpCode(204)
-  async deleteCartItem(@Param('id') productId: string, @Req() req: AuthRequest) {
+  async deleteCartItem(@IdParam() productId: string, @Req() req: AuthRequest) {
     await this.cartItemsService.deleteCartItem(req.user.id, productId);
   }
 }
