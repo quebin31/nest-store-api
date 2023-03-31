@@ -1,18 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { Product, ProductImage, ProductState } from '@prisma/client';
+import { ProductState } from '@prisma/client';
 import { UpdateProductDto } from './dto/update-product.dto';
 import omit from 'lodash.omit';
-import { UploadedImage } from './product-images.service';
 import { GetProductsDto } from './dto/get-products.dto';
+import { FullProduct, ProductUploadedImage } from '../../types/products';
 
 export type GetProductsOptions = Omit<GetProductsDto, 'include'> & {
   skip: number,
   states: Exclude<ProductState, 'deleted'>[],
 }
-
-export type FullProduct = Product & { images: ProductImage[] }
 
 @Injectable()
 export class ProductsRepository {
@@ -34,7 +32,7 @@ export class ProductsRepository {
     });
   }
 
-  async createProductImages(id: string, images: UploadedImage[]): Promise<FullProduct> {
+  async createProductImages(id: string, images: ProductUploadedImage[]): Promise<FullProduct> {
     return this.prismaService.product.update({
       where: { id },
       data: {

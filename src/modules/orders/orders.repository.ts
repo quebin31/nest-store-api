@@ -1,27 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
-import {
-  Order,
-  OrderCancelCode,
-  OrderCancelReason,
-  OrderItem,
-  OrderState,
-  Product,
-  ProductState,
-} from '@prisma/client';
+import { OrderState, ProductState } from '@prisma/client';
 import { CancelOrderDto, UpdateProductOrderDto } from './dto/update-order.dto';
 import { GetOrdersDto } from './dto/get-orders.dto';
+import { FullOrder } from '../../types/orders';
 
 export type GetOrdersOptions = Omit<GetOrdersDto, 'state'> & {
   skip: number,
   states: OrderState[],
-}
-
-export type FullCancelReason = OrderCancelReason & { code: OrderCancelCode }
-export type FullOrderItem = OrderItem & { product: Product }
-export type FullOrder = Order & {
-  items: FullOrderItem[],
-  cancelReason?: FullCancelReason | null,
 }
 
 @Injectable()
@@ -39,7 +25,7 @@ export class OrdersRepository {
     });
   }
 
-  async createOrder(userId: string) {
+  async createOrder(userId: string): Promise<FullOrder> {
     const cartItems = await this.getActiveCartItems(userId);
     const createItemsData = cartItems.map(item => ({
       quantity: item.quantity,

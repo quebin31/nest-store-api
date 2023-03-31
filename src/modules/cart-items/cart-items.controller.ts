@@ -16,7 +16,7 @@ import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { CartItemsService } from './cart-items.service';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
-@Controller({ path: '/cart-items', version: '1' })
+@Controller({ path: '/cart-items.ts', version: '1' })
 export class CartItemsController {
   constructor(private cartItemsService: CartItemsService) {
   }

@@ -3,8 +3,7 @@ import { S3Service } from '../../shared/s3/s3.service';
 import { MulterFile } from '../../utils/multer';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
-
-export type UploadedImage = { imageId: string, imageUrl: string }
+import { ProductUploadedImage } from '../../types/products';
 
 @Injectable()
 export class ProductImagesService {
@@ -31,7 +30,7 @@ export class ProductImagesService {
     return this.getImageUrl(id);
   }
 
-  async uploadProductImages(images: MulterFile[]): Promise<UploadedImage[]> {
+  async uploadProductImages(images: MulterFile[]): Promise<ProductUploadedImage[]> {
     const uploadPromises = images.map(async image => {
       const imageId = randomUUID();
       const imageUrl = await this.uploadProductImage(imageId, image);
@@ -40,6 +39,6 @@ export class ProductImagesService {
 
     return (await Promise.allSettled(uploadPromises))
       .map(it => it.status === 'fulfilled' ? it.value : null)
-      .filter(it => it !== null) as Array<UploadedImage>;
+      .filter(it => it !== null) as Array<ProductUploadedImage>;
   }
 }

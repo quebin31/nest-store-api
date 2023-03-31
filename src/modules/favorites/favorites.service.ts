@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { FavoritesRepository, FullFavorite, GetFavorites } from './favorites.repository';
+import { FavoritesRepository, GetFavorites } from './favorites.repository';
 import { ProductsService } from '../products/products.service';
 import { GetFavoritesDto } from './dto/get-favorites.dto';
+import { FullFavorite } from '../../types/favorites';
 
 @Injectable()
 export class FavoritesService {

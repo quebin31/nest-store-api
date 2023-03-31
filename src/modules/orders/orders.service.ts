@@ -5,19 +5,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  FullCancelReason,
-  FullOrder,
-  FullOrderItem,
-  GetOrdersOptions,
-  OrdersRepository,
-} from './orders.repository';
+import { GetOrdersOptions, OrdersRepository } from './orders.repository';
 import { OrderState, ProductState, Role } from '@prisma/client';
 import pick from 'lodash.pick';
+import omit from 'lodash.omit';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { UsersRepository } from '../../shared/users/users.repository';
-import omit from 'lodash.omit';
 import { CancelOrderDto, ConfirmOrderDto, UpdateOrderDto } from './dto/update-order.dto';
+import { FullCancelReason, FullOrder, FullOrderItem } from '../../types/orders';
 
 @Injectable()
 export class OrdersService {

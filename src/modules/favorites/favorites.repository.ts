@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
-import { ProductState, ProductUserFavorite } from '@prisma/client';
+import { ProductState } from '@prisma/client';
 import { GetFavoritesDto } from './dto/get-favorites.dto';
-import { FullProduct } from '../products/products.repository';
+import { FullFavorite } from '../../types/favorites';
 
 export type GetFavorites = GetFavoritesDto & { user: string }
-export type FullFavorite = ProductUserFavorite & { product: FullProduct }
 
 @Injectable()
 export class FavoritesRepository {

@@ -2,12 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../shared/prisma/prisma.service';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-import { CartItem, ProductState } from '@prisma/client';
+import { ProductState } from '@prisma/client';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
-import { FullProduct } from '../products/products.repository';
+import { FullCartItem } from '../../types/cart-items';
 
 export type GetCartItemsOptions = GetCartItemsDto & { user: string }
-export type FullCartItem = CartItem & { product: FullProduct }
 
 @Injectable()
 export class CartItemsRepository {

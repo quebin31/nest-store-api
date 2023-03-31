@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CartItemsRepository, FullCartItem, GetCartItemsOptions } from './cart-items.repository';
+import { CartItemsRepository, GetCartItemsOptions } from './cart-items.repository';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { Product } from '@prisma/client';
 import { ProductsService } from '../products/products.service';
 import pick from 'lodash.pick';
 import { GetCartItemsDto } from './dto/get-cart-items.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
-
+import { FullCartItem } from '../../types/cart-items';
 
 @Injectable()
 export class CartItemsService {
