@@ -1,5 +1,4 @@
 import { SignUpDto } from './dto/sign-up.dto';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import {
@@ -11,6 +10,7 @@ import {
 import { UsersRepository } from '../../shared/users/users.repository';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SendVerificationEmailEvent } from '../../events';
+import { comparePasswords, hashPassword } from '../../utils/auth';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +33,7 @@ export class AuthService {
       throw new ForbiddenException('Only admins can sign up new managers');
     }
 
-    const saltedPassword = await bcrypt.hash(password, 10);
+    const saltedPassword = await hashPassword(password);
     const user = await this.usersRepository
       .createUser({ password: saltedPassword, ...rest })
       .catch(_ => {
@@ -50,7 +50,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const isSamePassword = bcrypt.compare(password, user.password);
+    const isSamePassword = await comparePasswords(password, user.password);
     if (!isSamePassword) {
       throw new UnauthorizedException('Invalid email or password');
     }
