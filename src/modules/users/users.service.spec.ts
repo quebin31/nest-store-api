@@ -1,6 +1,6 @@
 import { UsersService } from './users.service';
 import { captor, mockDeep, mockReset } from 'jest-mock-extended';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, EventEmitterModule } from '@nestjs/event-emitter';
 import { UsersRepository } from '../../shared/users/users.repository';
 import { faker } from '@faker-js/faker';
 import { NotFoundException } from '@nestjs/common';
@@ -8,15 +8,27 @@ import { fakeUser } from '../../test/factories/users';
 import { pick } from 'lodash';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserUpdatedEmailEvent } from '../../events';
+import { UsersModule } from './users.module';
+import { Test } from '@nestjs/testing';
 
 describe('UsersService', () => {
+  let usersService: UsersService;
   const usersRepository = mockDeep<UsersRepository>();
   const eventEmitter = mockDeep<EventEmitter2>();
-  const usersService = new UsersService(usersRepository, eventEmitter);
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockReset(usersRepository);
     mockReset(eventEmitter);
+
+    const moduleRef = await Test
+      .createTestingModule({ imports: [UsersModule, EventEmitterModule.forRoot()] })
+      .overrideProvider(UsersRepository)
+      .useValue(usersRepository)
+      .overrideProvider(EventEmitter2)
+      .useValue(eventEmitter)
+      .compile()
+
+    usersService = moduleRef.get<UsersService>(UsersService);
   });
 
   describe('Finding a user', () => {
